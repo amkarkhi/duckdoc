@@ -1,21 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const toggleSubmenu = (event) => {
-    const parent = event.target.parentElement;
-    parent.classList.toggle("expanded");
-  };
+  console.log("DOM loaded, setting up sidebar");
+  
+  // Wait a bit to ensure all HTML is rendered
+  setTimeout(() => {
+    // First, ensure all folders start collapsed
+    const allFolders = document.querySelectorAll(".tree-menu .folder");
+    console.log("Found folders:", allFolders.length);
+    allFolders.forEach((folder, index) => {
+      const folderName = folder.querySelector(".folder-name")?.textContent || "unknown";
+      console.log(`Processing folder ${index}:`, folderName);
+      
+      // Remove any existing expanded class
+      folder.classList.remove("expanded");
+      
+      // Explicitly set the ul to be hidden
+      const ul = folder.querySelector("ul");
+      if (ul) {
+        ul.style.maxHeight = "0";
+        ul.style.overflow = "hidden";
+      }
+      
+      console.log("Final classes:", folder.className);
+    });
 
-  document.querySelectorAll(".tree-menu .folder-name").forEach((folder) => {
-    folder.addEventListener("click", toggleSubmenu);
-  });
+    // Then set up click handlers
+    const toggleSubmenu = (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      
+      const folderElement = event.target.parentElement;
+      const ul = folderElement.querySelector("ul");
+      
+      console.log("Toggling folder:", event.target.textContent);
+      console.log("Folder element:", folderElement);
+      console.log("UL element:", ul);
+      
+      if (folderElement.classList.contains("expanded")) {
+        // Collapse
+        folderElement.classList.remove("expanded");
+        if (ul) {
+          ul.style.maxHeight = "0";
+        }
+        console.log("Collapsed");
+      } else {
+        // Expand
+        folderElement.classList.add("expanded");
+        if (ul) {
+          ul.style.maxHeight = "1000px";
+        }
+        console.log("Expanded");
+      }
+    };
 
-  // Expand all matching folders for better visibility
-  const searchedFolders = document.querySelectorAll(".tree-menu .folder-name");
-  searchedFolders.forEach((folder) => {
-    const parent = folder.parentElement;
-    if (parent.style.display !== "none") {
-      parent.classList.add("expanded");
-    }
-  });
+    // Add click listeners to ALL folder names
+    const folderNames = document.querySelectorAll(".tree-menu .folder-name");
+    console.log("Found folder names:", folderNames.length);
+    folderNames.forEach((folder, index) => {
+      console.log(`Adding click listener to folder ${index}:`, folder.textContent);
+      folder.addEventListener("click", toggleSubmenu);
+      // Make sure it's styled as clickable
+      folder.style.cursor = "pointer";
+    });
+    
+  }, 200);
 
   // Smooth scroll for TOC
   const tocLinks = document.querySelectorAll(".toc a");
@@ -38,9 +85,14 @@ function filterTree() {
   const treeItems = document.querySelectorAll(".tree-menu li");
 
   if (query === "") {
-    // Show all items when no search query
+    // Show all items when no search query but keep folders collapsed
     treeItems.forEach((item) => {
       item.style.display = "block";
+    });
+    // Reset all folders to collapsed state when search is cleared
+    const allFolders = document.querySelectorAll(".tree-menu .folder");
+    allFolders.forEach((folder) => {
+      folder.classList.remove("expanded");
     });
     return;
   }
