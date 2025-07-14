@@ -1,38 +1,54 @@
 /* CSS Variables for themes */
 :root {
-    /* Dark theme (default) */
-    --bg-primary: #1e1e1e;
-    --bg-secondary: #252526;
-    --bg-tertiary: #2d2d30;
-    --bg-hover: #3c3c3c;
-    --text-primary: #cccccc;
-    --text-secondary: #969696;
-    --text-accent: #569cd6;
-    --text-link: #007acc;
-    --border-color: #3c3c3c;
-    --border-hover: #007acc;
-    --input-bg: #3c3c3c;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-medium: rgba(0, 0, 0, 0.2);
-    --accent-gradient: linear-gradient(135deg, #569cd6, #007acc);
+    /* Dark theme - Modern attractive palette */
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a1f29;
+    --bg-tertiary: #242b38;
+    --bg-hover: rgba(0, 212, 170, 0.1);
+    --text-primary: #e6e6e6;
+    --text-secondary: #b8c5d1;
+    --text-accent: #00d4aa;
+    --text-link: #00d4aa;
+    --border-color: #2d3748;
+    --border-hover: #00d4aa;
+    --input-bg: #242b38;
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+    --accent-gradient: linear-gradient(135deg, #00d4aa, #00b894);
+    
+    /* Additional modern colors */
+    --success-color: #00d4aa;
+    --warning-color: #ffd93d;
+    --error-color: #ff6b6b;
+    --info-color: #74c0fc;
+    --purple-accent: #9775fa;
+    --orange-accent: #ff922b;
 }
 
-/* Light theme - Enhanced colors and modern design */
+/* Light theme - Enhanced modern design */
 [data-theme="light"] {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-tertiary: #e9ecef;
-    --bg-hover: #e3f2fd;
-    --text-primary: #212529;
-    --text-secondary: #6c757d;
+    --bg-primary: #fafbfc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f3f4;
+    --bg-hover: rgba(25, 118, 210, 0.08);
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
     --text-accent: #1976d2;
-    --text-link: #0d47a1;
-    --border-color: #dee2e6;
+    --text-link: #1976d2;
+    --border-color: #e2e8f0;
     --border-hover: #1976d2;
     --input-bg: #ffffff;
-    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-light: rgba(0, 0, 0, 0.06);
     --shadow-medium: rgba(0, 0, 0, 0.12);
-    --accent-gradient: linear-gradient(135deg, #1976d2, #0d47a1);
+    --accent-gradient: linear-gradient(135deg, #1976d2, #1565c0);
+    
+    /* Additional modern colors for light theme */
+    --success-color: #00b894;
+    --warning-color: #fd79a8;
+    --error-color: #e17055;
+    --info-color: #0984e3;
+    --purple-accent: #6c5ce7;
+    --orange-accent: #fd79a8;
 }
 
 /* Reset and base styles */
@@ -67,32 +83,34 @@ body.sidebar-collapsed {
 
 /* Sidebar toggle button */
 .sidebar-toggle {
-    background: var(--bg-tertiary);
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     cursor: pointer;
     font-family: inherit;
     font-size: 16px;
     line-height: 1;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px var(--shadow-light), 0 1px 3px var(--shadow-medium);
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(8px);
 }
 
 .sidebar-toggle:hover {
-    background-color: var(--bg-hover);
-    border-color: var(--border-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-medium);
-    color: var(--text-link);
+    background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(0, 212, 170, 0.15) 100%);
+    border-color: var(--text-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow-medium), 0 2px 6px var(--shadow-light);
+    color: var(--text-accent);
 }
 
 .sidebar-toggle:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
+    transition: transform 0.1s ease;
 }
 
 /* Add rotation animation for the hamburger icon */
@@ -100,65 +118,73 @@ body.sidebar-collapsed .sidebar-toggle {
     background: var(--accent-gradient);
     color: white;
     border-color: transparent;
+    box-shadow: 0 4px 16px rgba(0, 212, 170, 0.3), 0 2px 8px rgba(0, 212, 170, 0.2);
 }
 
 body.sidebar-collapsed .sidebar-toggle:hover {
-    background: var(--accent-gradient);
-    transform: translateY(-1px) scale(1.05);
+    background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4), 0 3px 10px rgba(0, 212, 170, 0.3);
 }
 
 /* Theme toggle button */
 .theme-toggle {
-    background-color: var(--bg-tertiary);
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     cursor: pointer;
     font-family: inherit;
     font-size: 16px;
     line-height: 1;
-    transition: all 0.3s ease;
-    min-width: 50px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-light);
+    box-shadow: 0 2px 8px var(--shadow-light), 0 1px 3px var(--shadow-medium);
     font-weight: 500;
+    backdrop-filter: blur(8px);
 }
 
 .theme-toggle:hover {
-    background-color: var(--bg-hover);
-    border-color: var(--border-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-medium);
+    background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(0, 212, 170, 0.15) 100%);
+    border-color: var(--text-accent);
+    transform: translateY(-2px) rotate(15deg);
+    box-shadow: 0 4px 16px var(--shadow-medium), 0 2px 6px var(--shadow-light);
+    color: var(--text-accent);
 }
 
 .theme-toggle:active {
-    transform: translateY(0);
+    transform: translateY(-1px) rotate(10deg);
+    transition: transform 0.1s ease;
 }
 
 /* Sidebar */
 .sidebar {
     grid-area: sidebar;
-    background-color: var(--bg-secondary);
-    border-right: 1px solid var(--border-color);
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-right: 2px solid transparent;
+    border-image: linear-gradient(180deg, var(--border-color) 0%, transparent 100%) 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px 15px 15px 15px;
+    padding: 24px 18px 18px 18px;
     display: flex;
     flex-direction: column;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-light);
+    box-shadow: 2px 0 12px var(--shadow-light), 1px 0 4px var(--shadow-medium);
     position: relative;
+    backdrop-filter: blur(8px);
 }
 
 [data-theme="light"] .sidebar {
-    background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(248, 249, 250, 0.8) 100%);
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.06), 1px 0 6px rgba(0, 0, 0, 0.04);
 }
 
 body.sidebar-collapsed .sidebar {
-    padding: 20px 5px 15px 5px;
+    padding: 24px 8px 18px 8px;
     overflow: hidden;
 }
 
@@ -184,21 +210,24 @@ body.sidebar-collapsed .sidebar::after {
 /* Navbar */
 .navbar {
     grid-area: navbar;
-    background-color: var(--bg-secondary);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
     border-bottom: 1px solid var(--border-color);
-    padding: 0 20px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 50px;
+    height: 56px;
     position: relative;
-    transition: background-color 0.3s ease;
-    box-shadow: var(--shadow-light);
-    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px var(--shadow-light), 0 1px 3px var(--shadow-medium);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid transparent;
+    border-image: var(--accent-gradient) 1;
 }
 
 [data-theme="light"] .navbar {
-    background: linear-gradient(90deg, var(--bg-secondary) 0%, rgba(248, 249, 250, 0.95) 100%);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .navbar-left {
@@ -210,34 +239,47 @@ body.sidebar-collapsed .sidebar::after {
 .navbar-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--text-accent);
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 20px;
     letter-spacing: -0.5px;
+    transition: all 0.3s ease;
+}
+
+.navbar-logo:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
 }
 
 .navbar-logo-icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background: var(--accent-gradient);
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 16px;
     color: white;
-    box-shadow: var(--shadow-light);
+    box-shadow: 0 4px 16px rgba(0, 212, 170, 0.3), 0 2px 8px rgba(0, 212, 170, 0.2);
+    transition: all 0.3s ease;
+}
+
+.navbar-logo-icon:hover {
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4), 0 3px 10px rgba(0, 212, 170, 0.3);
+    transform: translateY(-1px);
 }
 
 .navbar-file-path {
     color: var(--text-secondary);
     font-size: 14px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-    background-color: var(--bg-tertiary);
-    padding: 4px 8px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    padding: 6px 12px;
+    border-radius: 6px;
     border: 1px solid var(--border-color);
+    backdrop-filter: blur(8px);
 }
 
 .navbar-file-path .file-name {
@@ -276,42 +318,63 @@ body.sidebar-collapsed .sidebar::after {
 /* Content area */
 .content {
     grid-area: content;
-    padding: 30px 40px;
+    padding: 32px 48px;
     overflow-y: auto;
-    background-color: var(--bg-primary);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     border-right: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     max-width: 100%;
+    position: relative;
+    backdrop-filter: blur(8px);
+}
+
+.content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-gradient);
+    opacity: 0.6;
 }
 
 [data-theme="light"] .content {
-    background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(255, 255, 255, 0.98) 100%);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }
 
 /* Table of Contents */
 .toc {
     grid-area: toc;
-    background-color: var(--bg-secondary);
-    padding: 20px;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    padding: 24px;
     overflow-y: auto;
-    border-left: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
-    box-shadow: var(--shadow-light);
+    border-left: 2px solid transparent;
+    border-image: linear-gradient(180deg, var(--border-color) 0%, transparent 100%) 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -2px 0 12px var(--shadow-light), -1px 0 4px var(--shadow-medium);
+    backdrop-filter: blur(8px);
 }
 
 [data-theme="light"] .toc {
-    background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(248, 249, 250, 0.9) 100%);
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.06), -1px 0 6px rgba(0, 0, 0, 0.04);
 }
 
 .toc h2 {
     color: var(--text-accent);
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.3px;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 8px;
+    border-bottom: 2px solid transparent;
+    border-image: var(--accent-gradient) 1;
+    padding-bottom: 10px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .toc ul {
@@ -325,20 +388,39 @@ body.sidebar-collapsed .sidebar::after {
 }
 
 .toc a {
-    color: var(--text-primary);
+    color: var(--text-secondary);
     text-decoration: none;
     display: block;
-    padding: 6px 8px;
-    transition: all 0.3s ease;
-    border-radius: 4px;
+    padding: 8px 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
     font-size: 14px;
     line-height: 1.4;
+    border: 1px solid transparent;
+    font-weight: 500;
+    position: relative;
 }
 
 .toc a:hover {
-    color: var(--text-link);
-    background-color: var(--bg-hover);
-    transform: translateX(4px);
+    color: var(--text-accent);
+    background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(0, 212, 170, 0.08) 100%);
+    transform: translateX(6px);
+    border-color: var(--text-accent);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.toc a:before {
+    content: '▸';
+    position: absolute;
+    left: -8px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: var(--text-accent);
+}
+
+.toc a:hover:before {
+    opacity: 1;
+    left: -12px;
 }
 
 /* TOC level indentation */
@@ -405,26 +487,29 @@ body.sidebar-collapsed .sidebar::after {
 .tree-menu .folder-name {
     color: var(--text-accent);
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: block;
     font-weight: 600;
-    transition: all 0.3s ease;
-    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
     font-size: 14px;
-    background-color: transparent;
+    background: transparent;
     border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
 }
 
 .tree-menu .folder-name:hover {
     color: var(--text-link);
-    background-color: var(--bg-hover);
-    border-color: var(--border-color);
-    transform: translateX(2px);
+    background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(0, 212, 170, 0.08) 100%);
+    border-color: var(--text-accent);
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 [data-theme="light"] .tree-menu .folder-name:hover {
-    background-color: rgba(25, 118, 210, 0.08);
-    box-shadow: var(--shadow-light);
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.08) 0%, rgba(25, 118, 210, 0.04) 100%);
+    box-shadow: 0 2px 12px rgba(25, 118, 210, 0.15);
 }
 
 .tree-menu .folder-name:before {
@@ -460,35 +545,44 @@ body.sidebar-collapsed .sidebar::after {
 }
 
 .tree-menu .file a {
-    color: var(--text-primary);
+    color: var(--text-secondary);
     text-decoration: none;
     display: block;
-    padding: 6px 12px;
-    transition: all 0.3s ease;
-    border-radius: 4px;
+    padding: 8px 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
     font-size: 14px;
-    margin: 2px 0;
+    margin: 3px 0;
     border: 1px solid transparent;
     position: relative;
+    background: transparent;
+    font-weight: 500;
 }
 
 .tree-menu .file a:before {
     content: "📄";
-    margin-right: 8px;
+    margin-right: 10px;
     font-size: 14px;
     opacity: 0.8;
+    transition: all 0.3s ease;
 }
 
 .tree-menu .file a:hover {
-    color: var(--text-link);
-    background-color: var(--bg-hover);
-    border-color: var(--border-color);
-    transform: translateX(4px);
-    box-shadow: var(--shadow-light);
+    color: var(--text-accent);
+    background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(0, 212, 170, 0.05) 100%);
+    border-color: var(--text-accent);
+    transform: translateX(6px);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.tree-menu .file a:hover:before {
+    transform: scale(1.1);
+    opacity: 1;
 }
 
 [data-theme="light"] .tree-menu .file a:hover {
-    background-color: rgba(25, 118, 210, 0.05);
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(25, 118, 210, 0.02) 100%);
+    box-shadow: 0 2px 12px rgba(25, 118, 210, 0.1);
 }
 
 /* Content styling */
