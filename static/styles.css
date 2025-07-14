@@ -53,18 +53,13 @@ body {
     grid-template-areas: 
         "navbar navbar navbar"
         "sidebar content toc";
-    transition: grid-template-columns 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
     line-height: 1.6;
 }
 
-/* Smooth scrolling for the entire application */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Sidebar collapsed state */
+/* Sidebar collapsed state - smoother transition */
 body.sidebar-collapsed {
-    grid-template-columns: 0px 1fr 300px;
+    grid-template-columns: 60px 1fr 300px;
     grid-template-areas: 
         "navbar navbar navbar"
         "sidebar content toc";
@@ -72,9 +67,9 @@ body.sidebar-collapsed {
 
 /* Sidebar toggle button */
 .sidebar-toggle {
-    background: var(--accent-gradient);
-    color: white;
-    border: none;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
@@ -84,15 +79,32 @@ body.sidebar-collapsed {
     transition: all 0.3s ease;
     box-shadow: var(--shadow-light);
     font-weight: 500;
+    position: relative;
+    overflow: hidden;
 }
 
 .sidebar-toggle:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
     transform: translateY(-1px);
     box-shadow: var(--shadow-medium);
+    color: var(--text-link);
 }
 
 .sidebar-toggle:active {
     transform: translateY(0);
+}
+
+/* Add rotation animation for the hamburger icon */
+body.sidebar-collapsed .sidebar-toggle {
+    background: var(--accent-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+body.sidebar-collapsed .sidebar-toggle:hover {
+    background: var(--accent-gradient);
+    transform: translateY(-1px) scale(1.05);
 }
 
 /* Theme toggle button */
@@ -132,11 +144,13 @@ body.sidebar-collapsed {
     background-color: var(--bg-secondary);
     border-right: 1px solid var(--border-color);
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px 15px 15px 15px;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-light);
+    position: relative;
 }
 
 [data-theme="light"] .sidebar {
@@ -144,7 +158,27 @@ body.sidebar-collapsed {
 }
 
 body.sidebar-collapsed .sidebar {
-    transform: translateX(-100%);
+    padding: 20px 5px 15px 5px;
+    overflow: hidden;
+}
+
+/* Hide sidebar content when collapsed */
+body.sidebar-collapsed .sidebar > * {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Show only the toggle hint when collapsed */
+body.sidebar-collapsed .sidebar::after {
+    content: "📁";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    opacity: 0.3;
+    pointer-events: none;
 }
 
 /* Navbar */

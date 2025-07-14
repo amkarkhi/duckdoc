@@ -205,10 +205,17 @@ function filterTree() {
 // Toggle sidebar functionality
 function toggleSidebar() {
     const body = document.body;
+    const sidebarIcon = document.getElementById('sidebar-icon');
+    
     body.classList.toggle('sidebar-collapsed');
     
-    // Store the sidebar state in localStorage
+    // Update icon based on state
     const isCollapsed = body.classList.contains('sidebar-collapsed');
+    if (sidebarIcon) {
+        sidebarIcon.textContent = isCollapsed ? '→' : '☰';
+    }
+    
+    // Store the sidebar state in localStorage
     localStorage.setItem('sidebar-collapsed', isCollapsed);
 }
 
@@ -242,8 +249,15 @@ function initializeTheme() {
 // Initialize sidebar state from localStorage
 document.addEventListener('DOMContentLoaded', function() {
     const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    const sidebarIcon = document.getElementById('sidebar-icon');
+    
     if (isCollapsed) {
         document.body.classList.add('sidebar-collapsed');
+    }
+    
+    // Set the correct icon based on collapsed state
+    if (sidebarIcon) {
+        sidebarIcon.textContent = isCollapsed ? '→' : '☰';
     }
     
     // Initialize theme if not already done
