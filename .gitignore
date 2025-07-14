@@ -2,4 +2,7 @@
 *.log
 content/*
 !content/.keep
+!content/images.png
+!content/anime.jpg
+!content/HOME.md
 .opencode
