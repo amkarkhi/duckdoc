@@ -1,0 +1,8 @@
+{{ define "sidebar.html" }}
+<div class="sidebar">
+    <input type="text" id="search-bar" placeholder="Search documents..." oninput="filterTree()">
+    <ul class="tree-menu">
+        {{ defineTree .Navbar }}
+    </ul>
+</div>
+{{ end }}

@@ -1,0 +1,39 @@
+# AI.dev Context File
+
+This context file documents the tasks performed during the development of the DuckDoc project, as well as the effects of these tasks.
+
+## Tasks Performed
+
+1. **Fixing Template Errors**
+   - Addressed issues in `layout.html` such as the `safe` function error, ensuring proper rendering of markdown content.
+
+2. **Search Functionality**
+   - Added a search bar to the tree-view sidebar.
+   - Implemented real-time filtering of files and folders based on search input.
+
+3. **Expand/Collapse Functionality**
+   - Enhanced the tree-view sidebar to support expand and collapse of folder structures.
+   - Updated CSS and JavaScript to reflect this behavior.
+
+4. **Sticky Table of Contents (TOC)**
+   - Positioned the TOC on the right side of the screen.
+   - Made the TOC sticky, so it remains visible during scrolling.
+
+5. **Markdown Rendering**
+   - Added functionality to extract headers and subheaders from markdown files.
+   - Enabled navigation via clickable links in the TOC.
+
+6. **Visual Enhancements**
+   - Updated CSS for improved UI/UX, including adjustments for sticky elements and folder toggling.
+
+7. **Bug Fixes**
+   - Resolved issues such as loss of scrolling and TOC not behaving as expected.
+
+## Effects
+
+- Enhanced navigation and usability of markdown files.
+- Improved user experience with features like file search, TOC navigation, and expand/collapse.
+- Fixed major UI/UX bugs to ensure seamless functionality.
+
+This file serves as a reference for the changes made and their impact on the project.
+
