@@ -1,5 +1,5 @@
 {{ define "layout" }}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -32,6 +32,13 @@
         </div>
       </div>
       <div class="navbar-right">
+        <button
+          class="theme-toggle"
+          onclick="toggleTheme()"
+          title="Toggle theme"
+        >
+          <span id="theme-icon">🌙</span>
+        </button>
         <a href="/" class="navbar-home-link">Home</a>
       </div>
     </nav>

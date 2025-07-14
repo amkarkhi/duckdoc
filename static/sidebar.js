@@ -1,14 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM loaded, setting up sidebar");
+  // Initialize theme
+  initializeTheme();
   
   // Wait a bit to ensure all HTML is rendered
   setTimeout(() => {
-    // First, ensure all folders start collapsed
+    // Restore expanded folder states from localStorage
+    const expandedFolders = JSON.parse(localStorage.getItem('expandedFolders') || '[]');
+    
+    // First, ensure all folders start collapsed, then restore saved states
     const allFolders = document.querySelectorAll(".tree-menu .folder");
-    console.log("Found folders:", allFolders.length);
-    allFolders.forEach((folder, index) => {
-      const folderName = folder.querySelector(".folder-name")?.textContent || "unknown";
-      console.log(`Processing folder ${index}:`, folderName);
+    allFolders.forEach((folder) => {
+      const folderName = folder.querySelector(".folder-name");
+      const folderPath = folder.getAttribute("data-full-path") || folderName?.textContent || "";
       
       // Remove any existing expanded class
       folder.classList.remove("expanded");
@@ -20,20 +23,26 @@ document.addEventListener("DOMContentLoaded", () => {
         ul.style.overflow = "hidden";
       }
       
-      console.log("Final classes:", folder.className);
+      // Restore expanded state if it was previously expanded
+      if (expandedFolders.includes(folderPath)) {
+        folder.classList.add("expanded");
+        if (ul) {
+          ul.style.maxHeight = "1000px";
+        }
+      }
     });
 
-    // Then set up click handlers
+    // Then set up click handlers with state saving
     const toggleSubmenu = (event) => {
       event.stopPropagation();
       event.preventDefault();
       
       const folderElement = event.target.parentElement;
       const ul = folderElement.querySelector("ul");
+      const folderPath = folderElement.getAttribute("data-full-path") || event.target.textContent || "";
       
-      console.log("Toggling folder:", event.target.textContent);
-      console.log("Folder element:", folderElement);
-      console.log("UL element:", ul);
+      // Get current expanded folders
+      let expandedFolders = JSON.parse(localStorage.getItem('expandedFolders') || '[]');
       
       if (folderElement.classList.contains("expanded")) {
         // Collapse
@@ -41,22 +50,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (ul) {
           ul.style.maxHeight = "0";
         }
-        console.log("Collapsed");
+        // Remove from expanded folders list
+        expandedFolders = expandedFolders.filter(path => path !== folderPath);
       } else {
         // Expand
         folderElement.classList.add("expanded");
         if (ul) {
           ul.style.maxHeight = "1000px";
         }
-        console.log("Expanded");
+        // Add to expanded folders list
+        if (!expandedFolders.includes(folderPath)) {
+          expandedFolders.push(folderPath);
+        }
       }
+      
+      // Save updated state to localStorage
+      localStorage.setItem('expandedFolders', JSON.stringify(expandedFolders));
     };
 
     // Add click listeners to ALL folder names
     const folderNames = document.querySelectorAll(".tree-menu .folder-name");
-    console.log("Found folder names:", folderNames.length);
-    folderNames.forEach((folder, index) => {
-      console.log(`Adding click listener to folder ${index}:`, folder.textContent);
+    folderNames.forEach((folder) => {
       folder.addEventListener("click", toggleSubmenu);
       // Make sure it's styled as clickable
       folder.style.cursor = "pointer";
@@ -85,14 +99,30 @@ function filterTree() {
   const treeItems = document.querySelectorAll(".tree-menu li");
 
   if (query === "") {
-    // Show all items when no search query but keep folders collapsed
+    // Show all items when no search query and restore saved folder states
     treeItems.forEach((item) => {
       item.style.display = "block";
     });
-    // Reset all folders to collapsed state when search is cleared
+    
+    // Restore expanded folder states from localStorage instead of collapsing all
+    const expandedFolders = JSON.parse(localStorage.getItem('expandedFolders') || '[]');
     const allFolders = document.querySelectorAll(".tree-menu .folder");
+    
     allFolders.forEach((folder) => {
-      folder.classList.remove("expanded");
+      const folderPath = folder.getAttribute("data-full-path") || folder.querySelector(".folder-name")?.textContent || "";
+      const ul = folder.querySelector("ul");
+      
+      if (expandedFolders.includes(folderPath)) {
+        folder.classList.add("expanded");
+        if (ul) {
+          ul.style.maxHeight = "1000px";
+        }
+      } else {
+        folder.classList.remove("expanded");
+        if (ul) {
+          ul.style.maxHeight = "0";
+        }
+      }
     });
     return;
   }
@@ -182,11 +212,43 @@ function toggleSidebar() {
     localStorage.setItem('sidebar-collapsed', isCollapsed);
 }
 
+// Theme toggle functionality
+function toggleTheme() {
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
+    
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', newTheme);
+    themeIcon.textContent = newTheme === 'light' ? '🌞' : '🌙';
+    
+    // Store the theme preference in localStorage
+    localStorage.setItem('theme', newTheme);
+}
+
+// Initialize theme from localStorage
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
+    
+    html.setAttribute('data-theme', savedTheme);
+    if (themeIcon) {
+        themeIcon.textContent = savedTheme === 'light' ? '🌞' : '🌙';
+    }
+}
+
 // Initialize sidebar state from localStorage
 document.addEventListener('DOMContentLoaded', function() {
     const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
     if (isCollapsed) {
         document.body.classList.add('sidebar-collapsed');
+    }
+    
+    // Initialize theme if not already done
+    if (!document.documentElement.getAttribute('data-theme')) {
+        initializeTheme();
     }
 });
 
@@ -197,3 +259,16 @@ window.addEventListener('resize', function() {
         document.body.classList.remove('sidebar-mobile-open');
     }
 });
+
+// Utility function to clear saved folder states (for debugging)
+function clearFolderStates() {
+    localStorage.removeItem('expandedFolders');
+    console.log('Folder states cleared');
+}
+
+// Utility function to get current folder states (for debugging)
+function getFolderStates() {
+    const expandedFolders = JSON.parse(localStorage.getItem('expandedFolders') || '[]');
+    console.log('Current expanded folders:', expandedFolders);
+    return expandedFolders;
+}
