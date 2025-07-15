@@ -202,21 +202,83 @@ function filterTree() {
   });
 }
 
-// Toggle sidebar functionality
+// Toggle sidebar functionality - responsive version
 function toggleSidebar() {
     const body = document.body;
     const sidebarIcon = document.getElementById('sidebar-icon');
     
-    body.classList.toggle('sidebar-collapsed');
+    // Check if we're on mobile
+    const isMobile = window.innerWidth <= 768;
     
-    // Update icon based on state
-    const isCollapsed = body.classList.contains('sidebar-collapsed');
-    if (sidebarIcon) {
-        sidebarIcon.textContent = isCollapsed ? '→' : '☰';
+    if (isMobile) {
+        // Mobile: toggle sidebar overlay
+        const isMobileOpen = body.classList.contains('sidebar-mobile-open');
+        if (isMobileOpen) {
+            body.classList.remove('sidebar-mobile-open');
+            removeOverlay();
+        } else {
+            body.classList.add('sidebar-mobile-open');
+            createOverlay();
+        }
+        
+        // Update icon for mobile
+        if (sidebarIcon) {
+            sidebarIcon.textContent = body.classList.contains('sidebar-mobile-open') ? '✕' : '☰';
+        }
+    } else {
+        // Desktop: toggle sidebar collapse
+        body.classList.toggle('sidebar-collapsed');
+        
+        // Update icon based on state
+        const isCollapsed = body.classList.contains('sidebar-collapsed');
+        if (sidebarIcon) {
+            sidebarIcon.textContent = isCollapsed ? '→' : '☰';
+        }
+        
+        // Store the sidebar state in localStorage for desktop
+        localStorage.setItem('sidebar-collapsed', isCollapsed);
     }
+}
+
+// Create overlay for mobile sidebar
+function createOverlay() {
+    const existingOverlay = document.querySelector('.sidebar-overlay');
+    if (existingOverlay) return;
     
-    // Store the sidebar state in localStorage
-    localStorage.setItem('sidebar-collapsed', isCollapsed);
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.addEventListener('click', () => {
+        document.body.classList.remove('sidebar-mobile-open');
+        removeOverlay();
+        updateSidebarIcon();
+    });
+    document.body.appendChild(overlay);
+}
+
+// Remove overlay
+function removeOverlay() {
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Update sidebar icon based on current state
+function updateSidebarIcon() {
+    const sidebarIcon = document.getElementById('sidebar-icon');
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        const isMobileOpen = document.body.classList.contains('sidebar-mobile-open');
+        if (sidebarIcon) {
+            sidebarIcon.textContent = isMobileOpen ? '✕' : '☰';
+        }
+    } else {
+        const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+        if (sidebarIcon) {
+            sidebarIcon.textContent = isCollapsed ? '→' : '☰';
+        }
+    }
 }
 
 // Theme toggle functionality
@@ -246,19 +308,20 @@ function initializeTheme() {
     }
 }
 
-// Initialize sidebar state from localStorage
+// Initialize sidebar state from localStorage - responsive version
 document.addEventListener('DOMContentLoaded', function() {
-    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-    const sidebarIcon = document.getElementById('sidebar-icon');
+    const isMobile = window.innerWidth <= 768;
     
-    if (isCollapsed) {
-        document.body.classList.add('sidebar-collapsed');
+    if (!isMobile) {
+        // Only apply saved collapsed state on desktop
+        const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+        if (isCollapsed) {
+            document.body.classList.add('sidebar-collapsed');
+        }
     }
     
-    // Set the correct icon based on collapsed state
-    if (sidebarIcon) {
-        sidebarIcon.textContent = isCollapsed ? '→' : '☰';
-    }
+    // Set the correct icon based on screen size and state
+    updateSidebarIcon();
     
     // Initialize theme if not already done
     if (!document.documentElement.getAttribute('data-theme')) {
@@ -266,12 +329,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Handle window resize
+// Enhanced window resize handler
 window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-        // On desktop, remove any mobile-specific classes
-        document.body.classList.remove('sidebar-mobile-open');
+    const isMobile = window.innerWidth <= 768;
+    const body = document.body;
+    
+    if (isMobile) {
+        // Switch to mobile mode
+        body.classList.remove('sidebar-collapsed');
+        removeOverlay();
+    } else {
+        // Switch to desktop mode
+        body.classList.remove('sidebar-mobile-open');
+        removeOverlay();
+        
+        // Restore desktop sidebar state
+        const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+        if (isCollapsed) {
+            body.classList.add('sidebar-collapsed');
+        }
     }
+    
+    // Update icon for new screen size
+    updateSidebarIcon();
 });
 
 // Utility function to clear saved folder states (for debugging)
