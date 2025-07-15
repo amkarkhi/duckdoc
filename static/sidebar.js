@@ -298,7 +298,7 @@ function toggleTheme() {
 
 // Initialize theme from localStorage
 function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme') || 'light';
     const html = document.documentElement;
     const themeIcon = document.getElementById('theme-icon');
     
