@@ -24,6 +24,7 @@ WORKDIR /app
 
 # Copy the built binary from the builder stage
 COPY --from=builder /app/duckdoc .
+COPY --from=builder /app/. .
 
 # Expose the application port
 EXPOSE 8080
