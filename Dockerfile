@@ -14,10 +14,10 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o duckdoc
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o duckdoc
 
 # Start a new stage for the runtime image
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 # Set up working directory
 WORKDIR /app
