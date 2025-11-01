@@ -56,7 +56,8 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 		if info.IsDir() {
 			return nil
 		}
-		if filepath.Ext(path) == ".md" {
+		ext := filepath.Ext(path)
+		if ext == ".md" || ext == ".yaml" || ext == ".yml" {
 			relPath, _ := filepath.Rel(dir, path)
 			log.Printf("Processing file: %s", relPath)
 
@@ -117,6 +118,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 	requestedPath := r.URL.Path
 	var content string
 	var relPath string
+	var isSwagger bool
 
 	if requestedPath == "/" {
 		// Home page - render README.md from root folder
@@ -135,10 +137,24 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 
 		if contentBytes, err := os.ReadFile(contentPath); err == nil {
 			content = string(contentBytes)
+			// Check if this is a Swagger/OpenAPI file
+			ext := filepath.Ext(relPath)
+			if ext == ".yaml" || ext == ".yml" {
+				// Check if it's a Swagger file by looking for 'openapi' or 'swagger' at the start
+				if strings.HasPrefix(strings.TrimSpace(content), "openapi:") || strings.HasPrefix(strings.TrimSpace(content), "swagger:") {
+					isSwagger = true
+				}
+			}
 		} else {
 			// If file not found, show default content
 			content = "# File not found\n\nThe requested file could not be found."
 		}
+	}
+
+	// Handle Swagger files differently
+	if isSwagger {
+		renderSwagger(w, relPath, navbarTree)
+		return
 	}
 
 	log.Printf("Content being passed to extractTOC: %s", content)
@@ -335,4 +351,54 @@ func processImagePaths(content, relPath string) string {
 
 	log.Printf("Debug: Finished processing content for relPath: %s\nProcessed Content:\n%s", relPath, processedContent)
 	return processedContent
+}
+
+// renderSwagger renders a Swagger/OpenAPI specification file
+func renderSwagger(w http.ResponseWriter, relPath string, navbarTree *TreeNode) {
+	tmpl, err := template.New("layout").Funcs(template.FuncMap{
+		"defineTree": func(node *TreeNode) template.HTML {
+			var renderTree func(*TreeNode) string
+			renderTree = func(node *TreeNode) string {
+				output := ""
+				if node != nil {
+					if node.Name == "root" {
+						// For root node, render all children directly
+						for _, child := range node.Children {
+							output += renderTree(child)
+						}
+					} else {
+						if len(node.Children) > 0 {
+							output += "<li class=\"folder\" data-full-path=\"" + node.CompletePath + "\"><span class=\"folder-name\">" + node.Name + "</span><ul>"
+							for _, child := range node.Children {
+								output += renderTree(child)
+							}
+							output += "</ul></li>"
+						} else {
+							output += "<li class=\"file\" data-full-path=\"" + node.CompletePath + "\"><a href=\"" + node.Path + "\">" + node.Name + "</a></li>"
+						}
+					}
+				}
+				return output
+			}
+			return template.HTML(renderTree(node))
+		},
+	}).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/swagger.html")
+	if err != nil {
+		log.Printf("Template parsing error: %v", err)
+		http.Error(w, "Error loading templates", http.StatusInternalServerError)
+		return
+	}
+
+	page := PageData{
+		Title:       "API Documentation",
+		Navbar:      navbarTree,
+		Content:     template.HTML(""), // Content will be rendered by Swagger UI
+		TOC:         []TOCItem{},
+		CurrentFile: relPath,
+	}
+
+	if err := tmpl.Execute(w, page); err != nil {
+		log.Printf("Template execution error: %v", err)
+		http.Error(w, "Error rendering page", http.StatusInternalServerError)
+	}
 }

@@ -631,6 +631,12 @@ body.sidebar-collapsed .sidebar::after {
     transition: all 0.3s ease;
 }
 
+/* Special icon for YAML/Swagger files */
+.tree-menu .file a[href$=".yaml"]:before,
+.tree-menu .file a[href$=".yml"]:before {
+    content: "📋";
+}
+
 .tree-menu .file a:hover {
     color: var(--text-accent);
     background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(168, 85, 247, 0.08) 100%);
