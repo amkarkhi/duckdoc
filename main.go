@@ -43,10 +43,17 @@ func makeTemplateFuncs(currentFile string) template.FuncMap {
 	}
 }
 
+var contentDir = func() string {
+	if d := os.Getenv("CONTENT_DIR"); d != "" {
+		return d
+	}
+	return "content"
+}()
+
 func main() {
 	http.HandleFunc("/", serveMarkdown)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir("content"))))
+	http.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir(contentDir))))
 
 	port := ":8080"
 	log.Printf("Server started on http://localhost%s", port)
@@ -56,7 +63,7 @@ func main() {
 }
 
 func serveMarkdown(w http.ResponseWriter, r *http.Request) {
-	navbarTree, err := buildNavTree("content")
+	navbarTree, err := buildNavTree(contentDir)
 	if err != nil {
 		log.Printf("Error building nav tree: %v", err)
 		http.Error(w, "Error reading content", http.StatusInternalServerError)
@@ -80,7 +87,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		relPath = strings.TrimPrefix(requestedPath, "/")
-		if b, err := os.ReadFile(filepath.Join("content", relPath)); err == nil {
+		if b, err := os.ReadFile(filepath.Join(contentDir, relPath)); err == nil {
 			content = string(b)
 			ext := filepath.Ext(relPath)
 			if ext == ".yaml" || ext == ".yml" {
