@@ -33,25 +33,26 @@
 
 /* CSS Variables */
 :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --bg-quaternary: #e2e8f0;
-    --bg-hover: rgba(168, 85, 247, 0.08);
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-tertiary: #94a3b8;
-    --text-accent: #7c3aed;
-    --text-link: #8b5cf6;
-    --border-color: #cbd5e1;
-    --border-hover: #7c3aed;
-    --input-bg: #ffffff;
-    --shadow-light: rgba(15, 23, 42, 0.04);
-    --shadow-medium: rgba(15, 23, 42, 0.08);
-    --accent-gradient: linear-gradient(135deg, #7c3aed, #6366f1);
+    /* Light — warm parchment, optimised for sustained reading */
+    --bg-primary:    #faf9f7;   /* warm off-white content area              */
+    --bg-secondary:  #f3f1ed;   /* sidebar / toc panel                      */
+    --bg-tertiary:   #ece9e3;   /* code blocks, table headers, inputs       */
+    --bg-quaternary: #e2ded6;   /* deepest inset surfaces                   */
+    --bg-hover:      rgba(15, 118, 110, 0.07);  /* teal tint on hover       */
+    --text-primary:  #1c1917;   /* warm near-black — less harsh than #000   */
+    --text-secondary:#57534e;   /* stone-600 — secondary labels             */
+    --text-tertiary: #a8a29e;   /* stone-400 — placeholders, muted text     */
+    --text-accent:   #0f766e;   /* teal-700 — accent, headings, active      */
+    --text-link:     #0d9488;   /* teal-600 — inline links                  */
+    --border-color:  #d6d3cd;   /* warm grey border                         */
+    --border-hover:  #0f766e;   /* teal on hover                            */
+    --input-bg:      #faf9f7;
+    --shadow-light:  rgba(28, 25, 23, 0.04);
+    --shadow-medium: rgba(28, 25, 23, 0.08);
+    --accent-gradient: linear-gradient(135deg, #0f766e, #0891b2);  /* teal→cyan */
     --success-color: #059669;
-    --warning-color: #d97706;
-    --error-color: #dc2626;
+    --warning-color: #b45309;
+    --error-color:   #dc2626;
     --font-family-mono: 'Space Mono', 'Courier New', Consolas, Monaco, monospace;
     --border-radius-sm: 4px;
     --border-radius-md: 6px;
@@ -62,25 +63,26 @@
 }
 
 [data-theme="dark"] {
-    --bg-primary: #0d0d0d;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #262626;
-    --bg-quaternary: #333333;
-    --bg-hover: rgba(168, 85, 247, 0.15);
-    --text-primary: #f5f5f5;
-    --text-secondary: #a3a3a3;
-    --text-tertiary: #737373;
-    --text-accent: #a855f7;
-    --text-link: #c084fc;
-    --border-color: #404040;
-    --border-hover: #a855f7;
-    --input-bg: #171717;
-    --shadow-light: rgba(0, 0, 0, 0.25);
-    --shadow-medium: rgba(0, 0, 0, 0.4);
-    --accent-gradient: linear-gradient(135deg, #a855f7, #7c3aed);
+    /* Dark — warm charcoal, not cold grey — easier on eyes in low light */
+    --bg-primary:    #1c1917;   /* warm dark base (stone-900)               */
+    --bg-secondary:  #242120;   /* sidebar / toc panel                      */
+    --bg-tertiary:   #2e2b29;   /* code blocks, table headers, inputs       */
+    --bg-quaternary: #3a3633;   /* deepest inset surfaces                   */
+    --bg-hover:      rgba(45, 212, 191, 0.08);  /* teal tint on hover       */
+    --text-primary:  #e7e5e4;   /* stone-200 — warm white, not glaring      */
+    --text-secondary:#a8a29e;   /* stone-400                                */
+    --text-tertiary: #78716c;   /* stone-500 — muted                        */
+    --text-accent:   #2dd4bf;   /* teal-400 — bright enough on dark bg      */
+    --text-link:     #5eead4;   /* teal-300 — links                         */
+    --border-color:  #3a3633;   /* warm dark border                         */
+    --border-hover:  #2dd4bf;   /* teal on hover                            */
+    --input-bg:      #242120;
+    --shadow-light:  rgba(0, 0, 0, 0.2);
+    --shadow-medium: rgba(0, 0, 0, 0.35);
+    --accent-gradient: linear-gradient(135deg, #2dd4bf, #38bdf8);  /* teal→sky */
     --success-color: #10b981;
     --warning-color: #f59e0b;
-    --error-color: #ef4444;
+    --error-color:   #f87171;
 }
 
 /* Reset */
@@ -131,7 +133,7 @@ body.sidebar-collapsed {
     justify-content: space-between;
     height: 48px;
     font-size: 13px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 -1px 0 0 rgba(168, 85, 247, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 -1px 0 0 rgba(15, 118, 110, 0.12);
 }
 
 .navbar-left {
@@ -293,7 +295,7 @@ body.sidebar-collapsed .sidebar-toggle:hover {
     transition: all var(--transition-normal);
     font-size: 13px;
     z-index: 1;
-    box-shadow: inset -1px 0 0 0 rgba(168, 85, 247, 0.1);
+    box-shadow: inset -1px 0 0 0 rgba(15, 118, 110, 0.1);
 }
 
 body.sidebar-collapsed .sidebar {
