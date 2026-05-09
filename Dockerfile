@@ -22,9 +22,10 @@ FROM debian:bullseye-slim
 # Set up working directory
 WORKDIR /app
 
-# Copy the built binary from the builder stage
+# Copy the built binary and static assets from the builder stage
 COPY --from=builder /app/duckdoc .
-COPY --from=builder /app/. .
+COPY --from=builder /app/static ./static
+COPY --from=builder /app/templates ./templates
 
 # Expose the application port
 EXPOSE 8080
