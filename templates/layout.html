@@ -4,12 +4,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DuckDoc</title>
+    <title>DuckDoc — Digikala Data & AI</title>
     <link rel="icon" type="image/x-icon" href="/static/duckdoclogo.ico" />
     <link rel="stylesheet" href="/static/styles.css" />
     <script src="/static/sidebar.js" defer></script>
   </head>
-  <body>
+  <body{{ if eq .CurrentFile "README.md" }} class="home-view"{{ end }}>
     <nav class="navbar">
       <div class="navbar-left">
         <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
@@ -21,9 +21,11 @@
           </div>
           <span>DuckDoc</span>
         </div>
+        {{ if ne .CurrentFile "README.md" }}
         <div class="navbar-file-path">
           <span class="file-name">{{ if .CurrentFile }}{{ .CurrentFile }}{{ else }}Documentation{{ end }}</span>
         </div>
+        {{ end }}
       </div>
       <div class="navbar-right">
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
@@ -33,6 +35,30 @@
       </div>
     </nav>
     {{ template "sidebar.html" . }}
+    {{ if eq .CurrentFile "README.md" }}
+    <main class="content home-content">
+      <div class="home-header">
+        <h1 class="home-title">Digikala Data &amp; AI Docs</h1>
+        <p class="home-hint">Search or browse from the sidebar</p>
+      </div>
+      <div class="home-search-wrapper">
+        <svg class="home-search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <input
+          id="hero-search"
+          type="text"
+          placeholder="Search docs, APIs, pipelines… (press /)"
+          autocomplete="off"
+          spellcheck="false"
+          oninput="heroSearch(this.value)"
+          onkeydown="heroSearchKeydown(event)"
+        />
+      </div>
+      <div id="hero-search-results" class="home-search-results" style="display:none"></div>
+    </main>
+    {{ else }}
     <main class="content">{{ .Content }}</main>
     <aside class="toc">
       <h2>Table of Contents</h2>
@@ -44,6 +70,7 @@
         {{ end }}
       </ul>
     </aside>
+    {{ end }}
   </body>
 </html>
 {{ end }}

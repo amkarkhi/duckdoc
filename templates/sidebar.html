@@ -1,7 +1,8 @@
 {{ define "sidebar.html" }}
 <div class="sidebar">
     <div class="search-wrapper">
-        <input type="text" id="search-bar" placeholder="Search…" oninput="filterTree()" autocomplete="off" spellcheck="false">
+        <input type="text" id="search-bar" placeholder="Search docs…" oninput="filterTree()" autocomplete="off" spellcheck="false">
+        <span id="search-count" class="search-count" style="display:none"></span>
     </div>
     <ul class="tree-menu">
         {{ defineTree .Navbar }}

@@ -1233,6 +1233,156 @@ body.swagger-view.sidebar-collapsed {
     display: inline-block;
 }
 
+/* ===== HOME VIEW ===== */
+body.home-view {
+    grid-template-columns: 280px 1fr;
+    grid-template-areas:
+        "navbar navbar"
+        "sidebar content";
+}
+
+body.home-view.sidebar-collapsed {
+    grid-template-columns: 56px 1fr;
+}
+
+.home-content {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    border-right: none !important;
+}
+
+.home-content::before { display: none; }
+
+.home-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.home-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--text-accent);
+    margin: 0 0 6px;
+    letter-spacing: -0.5px;
+}
+
+.home-hint {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+/* Home search */
+.home-search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+}
+
+.home-search-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+#hero-search {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-family-mono);
+    font-size: 13px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+#hero-search:focus {
+    outline: none;
+    border-color: var(--border-hover);
+    box-shadow: 0 0 0 2px var(--bg-hover);
+    background: var(--input-bg);
+}
+
+#hero-search::placeholder { color: var(--text-tertiary); }
+
+/* Search results list */
+.home-search-results {
+    margin-top: 6px;
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.hero-result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 9px 14px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background var(--transition-fast);
+}
+
+.hero-result-item:last-child { border-bottom: none; }
+
+.hero-result-item:hover,
+.hero-result-item.focused {
+    background: var(--bg-hover);
+    color: var(--text-accent);
+}
+
+.hero-result-path {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.hero-result-item mark,
+.tree-menu mark {
+    background: transparent;
+    color: var(--text-accent);
+    font-weight: 700;
+}
+
+.hero-search-empty {
+    padding: 12px 14px;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+
+/* ── Search count badge ── */
+.search-count {
+    display: inline-block;
+    background: var(--text-accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     body {
@@ -1242,6 +1392,15 @@ body.swagger-view.sidebar-collapsed {
             "navbar"
             "content";
     }
+
+    body.home-view {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "navbar"
+            "content";
+    }
+
+    .home-content { padding: 0 20px; }
 
     .toc { display: none !important; }
 
@@ -1309,6 +1468,8 @@ body.swagger-view.sidebar-collapsed {
 @media (min-width: 769px) and (max-width: 1024px) {
     body { grid-template-columns: 220px 1fr 200px; }
     body.sidebar-collapsed { grid-template-columns: 56px 1fr 200px; }
+    body.home-view { grid-template-columns: 220px 1fr; }
+    body.home-view.sidebar-collapsed { grid-template-columns: 56px 1fr; }
 
     .content { padding: 20px 24px; }
 
