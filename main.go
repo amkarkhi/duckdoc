@@ -135,7 +135,18 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 func buildNavTree(dir string) (*TreeNode, error) {
 	root := &TreeNode{Name: "root", Path: "", Children: []*TreeNode{}}
 
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	// EvalSymlinks resolves the git-sync symlink (/gitdocs/content -> /gitdocs/<sha>/)
+	// so filepath.Walk can descend into the actual directory.
+	resolved, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		// dir not yet created (git-sync still cloning) — return empty tree, not an error
+		if os.IsNotExist(err) {
+			return root, nil
+		}
+		return nil, err
+	}
+
+	err = filepath.Walk(resolved, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -147,7 +158,7 @@ func buildNavTree(dir string) (*TreeNode, error) {
 			return nil
 		}
 
-		relPath, err := filepath.Rel(dir, path)
+		relPath, err := filepath.Rel(resolved, path)
 		if err != nil {
 			return err
 		}
