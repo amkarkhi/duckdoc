@@ -684,6 +684,62 @@ body.sidebar-collapsed .sidebar::after {
     border: none;
 }
 
+/* ── Mermaid diagrams ──────────────────────────────────────────────────────── */
+
+/* Pre-render: hide the raw source so the fence text never flashes. */
+.content pre.mermaid {
+    visibility: hidden;
+    max-height: 60vh;
+    overflow: hidden;
+}
+
+/* Post-render: a plain centered container for the SVG. */
+.content .mermaid-rendered {
+    display: block;
+    margin: 24px 0;
+    padding: 20px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    font-family: inherit;
+    white-space: normal;
+}
+
+.content .mermaid-rendered svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Failed parse: show the message plus the original source. */
+.content .mermaid-error {
+    display: block;
+    margin: 24px 0;
+    padding: 16px 20px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #b14545;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: normal;
+}
+
+.content .mermaid-error-msg {
+    color: #b14545;
+    font-family: var(--font-family-mono);
+    font-size: 0.85em;
+    margin-bottom: 12px;
+}
+
+.content .mermaid-error pre {
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    white-space: pre;
+}
+
 .content blockquote {
     border-left: 4px solid var(--text-link);
     padding: 12px 16px;

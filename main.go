@@ -141,6 +141,12 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 					isSwagger = true
 				}
 			}
+			if ext == ".mmd" || ext == ".mermaid" {
+				// A .mmd file is raw diagram source, not markdown. Wrap it in a
+				// mermaid fence so it flows through the normal render path and
+				// gets picked up client-side like an inline ```mermaid block.
+				content = wrapMermaidSource(relPath, content)
+			}
 		} else {
 			content = "# File not found\n\nThe requested file could not be found."
 		}
@@ -155,7 +161,8 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 
 	toc := extractTOC(content)
 	processed := processImagePaths(content, relPath)
-	htmlContent := template.HTML(blackfriday.Run([]byte(processed), blackfriday.WithExtensions(blackfriday.CommonExtensions|blackfriday.AutoHeadingIDs)))
+	rendered := blackfriday.Run([]byte(processed), blackfriday.WithExtensions(blackfriday.CommonExtensions|blackfriday.AutoHeadingIDs))
+	htmlContent := template.HTML(promoteMermaidBlocks(string(rendered)))
 
 	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html")
 	if err != nil {
@@ -199,8 +206,7 @@ func buildNavTree(dir string) (*TreeNode, error) {
 		if info.IsDir() {
 			return nil
 		}
-		ext := filepath.Ext(path)
-		if ext != ".md" && ext != ".yaml" && ext != ".yml" {
+		if !docExtensions[filepath.Ext(path)] {
 			return nil
 		}
 
@@ -269,10 +275,32 @@ func collapseChains(node *TreeNode) {
 	}
 }
 
+// docExtensions are the file types that appear in the sidebar and can be
+// rendered as a page.
+var docExtensions = map[string]bool{
+	".md": true, ".yaml": true, ".yml": true, ".mmd": true, ".mermaid": true,
+}
+
+// wrapMermaidSource turns a standalone diagram file into a markdown document
+// containing a single mermaid fence, titled after the file. Any existing fence
+// markers are stripped first so a .mmd that already wraps itself in
+// ```mermaid does not end up double-fenced.
+func wrapMermaidSource(relPath, source string) string {
+	var lines []string
+	for _, line := range strings.Split(source, "\n") {
+		if strings.HasPrefix(strings.TrimSpace(line), "```") {
+			continue
+		}
+		lines = append(lines, line)
+	}
+	body := strings.Trim(strings.Join(lines, "\n"), "\n")
+	title := displayName(filepath.Base(relPath))
+	return "# " + title + "\n\n```mermaid\n" + body + "\n```\n"
+}
+
 // displayName strips the file extension for cleaner sidebar labels
 func displayName(name string) string {
-	ext := filepath.Ext(name)
-	if ext == ".md" || ext == ".yaml" || ext == ".yml" {
+	if ext := filepath.Ext(name); docExtensions[ext] {
 		return strings.TrimSuffix(name, ext)
 	}
 	return name
@@ -329,6 +357,19 @@ func containsFile(node *TreeNode, currentFile string) bool {
 		}
 	}
 	return false
+}
+
+// mermaidBlockRegex matches the <pre><code class="language-mermaid">…</code></pre>
+// that blackfriday emits for a ```mermaid fence. (?s) lets . span newlines and
+// the body capture is lazy so consecutive diagrams stay separate.
+var mermaidBlockRegex = regexp.MustCompile(`(?s)<pre><code class="language-mermaid">(.*?)</code></pre>`)
+
+// promoteMermaidBlocks rewrites fenced mermaid code blocks into the
+// <pre class="mermaid"> element mermaid-init.js renders. The body is left
+// HTML-escaped on purpose: mermaid reads textContent, which decodes entities
+// back to the original source, so "-->" and "<br/>" survive intact.
+func promoteMermaidBlocks(html string) string {
+	return mermaidBlockRegex.ReplaceAllString(html, `<pre class="mermaid">$1</pre>`)
 }
 
 // stripInlineMarkdown removes inline backtick spans, keeping the inner text,
