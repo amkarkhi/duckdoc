@@ -32,6 +32,7 @@ type PageData struct {
 	Content     template.HTML
 	TOC         []TOCItem
 	CurrentFile string
+	BasePath    string
 }
 
 // templateFuncs is populated at request time to carry currentFile for active-state highlighting
@@ -50,14 +51,58 @@ var contentDir = func() string {
 	return "content"
 }()
 
+// basePath is the URL prefix the app is mounted under when served from a
+// sub-path of a shared host (e.g. BASE_PATH=/duckdoc behind an ingress rule
+// for bigdataservices.digikala.com/duckdoc). It is normalised to either ""
+// (mounted at the root) or "/segment" with no trailing slash.
+var basePath = func() string {
+	p := strings.TrimSpace(os.Getenv("BASE_PATH"))
+	p = strings.Trim(p, "/")
+	if p == "" {
+		return ""
+	}
+	return "/" + p
+}()
+
+// url joins basePath with an absolute in-app path ("/static/styles.css").
+func url(p string) string {
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
+	if basePath == "" {
+		return p
+	}
+	if p == "/" {
+		return basePath + "/"
+	}
+	return basePath + p
+}
+
 func main() {
-	http.HandleFunc("/", serveMarkdown)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir(contentDir))))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", serveMarkdown)
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir(contentDir))))
+
+	var handler http.Handler = mux
+	if basePath != "" {
+		// Serve every route under basePath, and redirect a bare "/duckdoc" to
+		// "/duckdoc/" so StripPrefix sees a leading slash on the remainder.
+		root := http.NewServeMux()
+		root.Handle(basePath+"/", http.StripPrefix(basePath, mux))
+		root.Handle(basePath, http.RedirectHandler(basePath+"/", http.StatusMovedPermanently))
+		// Keep the app reachable at the root too, for the dedicated host
+		// (duckdoc.bigdata.digikala.com) that routes "/" to the same service.
+		root.Handle("/", mux)
+		handler = root
+	}
 
 	port := ":8080"
-	log.Printf("Server started on http://localhost%s", port)
-	if err := http.ListenAndServe(port, nil); err != nil {
+	if p := os.Getenv("PORT"); p != "" {
+		port = ":" + strings.TrimPrefix(p, ":")
+	}
+	log.Printf("Server started on http://localhost%s%s", port, basePath)
+	if err := http.ListenAndServe(port, handler); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -125,6 +170,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 		Content:     htmlContent,
 		TOC:         toc,
 		CurrentFile: relPath,
+		BasePath:    basePath,
 	}
 
 	if err := tmpl.Execute(w, page); err != nil {
@@ -263,7 +309,7 @@ func renderTreeHTML(node *TreeNode, currentFile string) string {
 		return sb.String()
 	}
 
-	path := template.HTMLEscapeString(node.Path)
+	path := template.HTMLEscapeString(url(node.Path))
 	isActive := strings.TrimPrefix(node.Path, "/") == currentFile
 	activeClass := ""
 	if isActive {
@@ -374,9 +420,9 @@ func processImagePaths(content, relPath string) string {
 
 		var newPath string
 		if baseDir == "" || relPath == "README.md" {
-			newPath = "/content/" + imagePath
+			newPath = url("/content/" + imagePath)
 		} else {
-			newPath = "/content/" + baseDir + "/" + imagePath
+			newPath = url("/content/" + baseDir + "/" + imagePath)
 		}
 
 		return "![" + altText + "](" + newPath + ")"
@@ -397,6 +443,7 @@ func renderSwagger(w http.ResponseWriter, relPath string, navbarTree *TreeNode, 
 		Content:     "",
 		TOC:         []TOCItem{},
 		CurrentFile: relPath,
+		BasePath:    basePath,
 	}
 
 	if err := tmpl.Execute(w, page); err != nil {

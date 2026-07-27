@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DuckDoc — Digikala Data & AI</title>
-    <link rel="icon" type="image/x-icon" href="/static/duckdoclogo.ico" />
-    <link rel="stylesheet" href="/static/styles.css" />
-    <script src="/static/sidebar.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="{{ .BasePath }}/static/duckdoclogo.ico" />
+    <link rel="stylesheet" href="{{ .BasePath }}/static/styles.css" />
+    <script src="{{ .BasePath }}/static/sidebar.js" defer></script>
   </head>
   <body{{ if eq .CurrentFile "README.md" }} class="home-view"{{ end }}>
     <nav class="navbar">
@@ -17,7 +17,7 @@
         </button>
         <div class="navbar-logo">
           <div class="navbar-logo-icon">
-            <img src="/static/duckdoclogo.ico" alt="DuckDoc Logo" class="logo-svg" />
+            <img src="{{ .BasePath }}/static/duckdoclogo.ico" alt="DuckDoc Logo" class="logo-svg" />
           </div>
           <span>DuckDoc</span>
         </div>
@@ -31,7 +31,7 @@
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
           <span id="theme-icon">🌙</span>
         </button>
-        <a href="/" class="navbar-home-link">Home</a>
+        <a href="{{ .BasePath }}/" class="navbar-home-link">Home</a>
       </div>
     </nav>
     {{ template "sidebar.html" . }}

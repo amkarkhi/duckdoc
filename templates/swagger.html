@@ -1,36 +1,58 @@
 {{ define "layout" }}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DuckDoc - API Documentation</title>
-    <link rel="icon" type="image/x-icon" href="/static/duckdoclogo.ico" />
-    <link rel="stylesheet" href="/static/styles.css" />
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" />
-    <script src="/static/sidebar.js" defer></script>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ .BasePath }}/static/duckdoclogo.ico"
+    />
+    <link rel="stylesheet" href="{{ .BasePath }}/static/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css"
+    />
+    <script src="{{ .BasePath }}/static/sidebar.js" defer></script>
   </head>
   <body class="swagger-view">
     <nav class="navbar">
       <div class="navbar-left">
-        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+        <button
+          class="sidebar-toggle"
+          onclick="toggleSidebar()"
+          title="Toggle sidebar"
+        >
           <span id="sidebar-icon">☰</span>
         </button>
         <div class="navbar-logo">
           <div class="navbar-logo-icon">
-            <img src="/static/duckdoclogo.ico" alt="DuckDoc Logo" class="logo-svg" />
+            <img
+              src="{{ .BasePath }}/static/duckdoclogo.ico"
+              alt="DuckDoc Logo"
+              class="logo-svg"
+            />
           </div>
           <span>DuckDoc</span>
         </div>
         <div class="navbar-file-path">
-          <span class="file-name">{{ if .CurrentFile }}{{ .CurrentFile }}{{ else }}API Documentation{{ end }}</span>
+          <span class="file-name"
+            >{{ if .CurrentFile }}{{ .CurrentFile }}{{ else }}API
+            Documentation{{ end }}</span
+          >
         </div>
       </div>
       <div class="navbar-right">
-        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <button
+          class="theme-toggle"
+          onclick="toggleTheme()"
+          title="Toggle theme"
+        >
           <span id="theme-icon">🌙</span>
         </button>
-        <a href="/" class="navbar-home-link">Home</a>
+        <a href="{{ .BasePath }}/" class="navbar-home-link">Home</a>
       </div>
     </nav>
     {{ template "sidebar.html" . }}
@@ -42,7 +64,7 @@
     <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
     <script>
       window.onload = function () {
-        const specUrl = "/content/{{ .CurrentFile }}";
+        const specUrl = "{{ .BasePath }}/content/{{ .CurrentFile }}";
 
         window.ui = SwaggerUIBundle({
           url: specUrl,
@@ -56,7 +78,15 @@
           docExpansion: "list",
           filter: true,
           showRequestHeaders: true,
-          supportedSubmitMethods: ["get", "post", "put", "delete", "patch", "head", "options"],
+          supportedSubmitMethods: [
+            "get",
+            "post",
+            "put",
+            "delete",
+            "patch",
+            "head",
+            "options",
+          ],
           tryItOutEnabled: true,
           onComplete: () => enhanceSchemas(),
         });
@@ -65,13 +95,18 @@
       function enhanceSchemas() {
         setTimeout(() => {
           const modelsSection = document.querySelector(".swagger-ui .models");
-          if (!modelsSection || document.querySelector(".schemas-controls")) return;
+          if (!modelsSection || document.querySelector(".schemas-controls"))
+            return;
 
           const controls = document.createElement("div");
           controls.className = "schemas-controls";
 
-          controls.appendChild(createSchemaButton("📂 Expand All", expandAllSchemas));
-          controls.appendChild(createSchemaButton("📁 Collapse All", collapseAllSchemas));
+          controls.appendChild(
+            createSchemaButton("📂 Expand All", expandAllSchemas),
+          );
+          controls.appendChild(
+            createSchemaButton("📁 Collapse All", collapseAllSchemas),
+          );
 
           const title = modelsSection.querySelector("h4, h5");
           title ? title.after(controls) : modelsSection.prepend(controls);
@@ -89,17 +124,30 @@
       }
 
       function expandAllSchemas() {
-        document.querySelectorAll(".swagger-ui .model-container.is-collapsed .model-toggle").forEach((t) => t.click());
+        document
+          .querySelectorAll(
+            ".swagger-ui .model-container.is-collapsed .model-toggle",
+          )
+          .forEach((t) => t.click());
       }
 
       function collapseAllSchemas() {
-        document.querySelectorAll(".swagger-ui .model-container:not(.is-collapsed) .model-toggle").forEach((t) => t.click());
+        document
+          .querySelectorAll(
+            ".swagger-ui .model-container:not(.is-collapsed) .model-toggle",
+          )
+          .forEach((t) => t.click());
       }
 
       function addSchemaCountBadge() {
-        const count = document.querySelectorAll(".swagger-ui .model-container").length;
-        const title = document.querySelector(".swagger-ui .models h4, .swagger-ui .models h5");
-        if (!title || count === 0 || title.querySelector(".schema-count")) return;
+        const count = document.querySelectorAll(
+          ".swagger-ui .model-container",
+        ).length;
+        const title = document.querySelector(
+          ".swagger-ui .models h4, .swagger-ui .models h5",
+        );
+        if (!title || count === 0 || title.querySelector(".schema-count"))
+          return;
 
         const badge = document.createElement("span");
         badge.className = "schema-count";
