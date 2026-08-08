@@ -1,0 +1,93 @@
+{{ define "layout" }}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DuckDoc — {{ .Title }}</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ .BasePath }}/static/duckdoclogo.ico"
+    />
+    <link rel="stylesheet" href="{{ .BasePath }}/static/styles.css" />
+    <script src="{{ .BasePath }}/static/sidebar.js" defer></script>
+  </head>
+  <body class="drawio-view">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <button
+          class="sidebar-toggle"
+          onclick="toggleSidebar()"
+          title="Toggle sidebar"
+        >
+          <span id="sidebar-icon">☰</span>
+        </button>
+        <div class="navbar-logo">
+          <div class="navbar-logo-icon">
+            <img
+              src="{{ .BasePath }}/static/duckdoclogo.ico"
+              alt="DuckDoc Logo"
+              class="logo-svg"
+            />
+          </div>
+          <span>DuckDoc</span>
+        </div>
+        <div class="navbar-file-path">
+          <span class="file-name"
+            >{{ if .CurrentFile }}{{ .CurrentFile }}{{ else }}Diagram{{ end }}</span
+          >
+        </div>
+      </div>
+      <div class="navbar-right">
+        <button
+          class="theme-toggle"
+          onclick="toggleTheme()"
+          title="Toggle theme"
+        >
+          <span id="theme-icon">🌙</span>
+        </button>
+        <a href="{{ .BasePath }}/" class="navbar-home-link">Home</a>
+      </div>
+    </nav>
+    {{ template "sidebar.html" . }}
+    <main class="content drawio-container">
+      <div class="drawio-toolbar">
+        <div class="drawio-pages" id="drawio-pages"></div>
+        <div class="drawio-actions">
+          <a
+            class="drawio-action"
+            href="{{ .BasePath }}/content/{{ .CurrentFile }}"
+            download
+            title="Download the .drawio source"
+            >⭳ Source</a
+          >
+        </div>
+      </div>
+      <div id="drawio-diagram" class="drawio-diagram" data-src="{{ .BasePath }}/content/{{ .CurrentFile }}"></div>
+    </main>
+
+    <script>
+      // Point the viewer at the vendored assets. These must be set before
+      // drawio-viewer.min.js loads: it initialises each path with `||`, so a
+      // value assigned here wins and nothing is fetched from diagrams.net.
+      // Without them, stencil-based shapes (AWS, Cisco, electrical…) render
+      // blank wherever the browser has no outbound internet.
+      window.STENCIL_PATH = "{{ .BasePath }}/static/drawio/stencils";
+      window.SHAPES_PATH = "{{ .BasePath }}/static/drawio/shapes";
+      window.IMAGE_PATH = "{{ .BasePath }}/static/drawio/images";
+      window.GRAPH_IMAGE_PATH = "{{ .BasePath }}/static/drawio/images";
+      window.STYLE_PATH = "{{ .BasePath }}/static/drawio/styles";
+      window.mxImageBasePath = "{{ .BasePath }}/static/drawio/mxgraph/images";
+      window.mxBasePath = "{{ .BasePath }}/static/drawio/mxgraph";
+      window.mxLoadStylesheets = false;
+      // MathJax is only pulled in for diagrams with math="1". Point it at a
+      // local path so that even those never reach out to diagrams.net (the
+      // bundle is not vendored, so math typesetting simply no-ops offline).
+      window.DRAW_MATH_URL = "{{ .BasePath }}/static/drawio/math";
+    </script>
+    <script src="{{ .BasePath }}/static/drawio-viewer.min.js"></script>
+    <script src="{{ .BasePath }}/static/drawio-init.js" defer></script>
+  </body>
+</html>
+{{ end }}

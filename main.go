@@ -121,7 +121,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 
 	requestedPath := r.URL.Path
 	var content, relPath string
-	var isSwagger bool
+	var isSwagger, isDrawio bool
 
 	if requestedPath == "/" {
 		relPath = "README.md"
@@ -141,6 +141,11 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 					isSwagger = true
 				}
 			}
+			if ext == ".drawio" || ext == ".dio" {
+				// draw.io files are mxGraph XML, not markdown. The viewer
+				// fetches the source itself, so the body is not rendered here.
+				isDrawio = true
+			}
 			if ext == ".mmd" || ext == ".mermaid" {
 				// A .mmd file is raw diagram source, not markdown. Wrap it in a
 				// mermaid fence so it flows through the normal render path and
@@ -156,6 +161,11 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 
 	if isSwagger {
 		renderSwagger(w, relPath, navbarTree, funcs)
+		return
+	}
+
+	if isDrawio {
+		renderDrawio(w, relPath, navbarTree, funcs)
 		return
 	}
 
@@ -279,6 +289,7 @@ func collapseChains(node *TreeNode) {
 // rendered as a page.
 var docExtensions = map[string]bool{
 	".md": true, ".yaml": true, ".yml": true, ".mmd": true, ".mermaid": true,
+	".drawio": true, ".dio": true,
 }
 
 // wrapMermaidSource turns a standalone diagram file into a markdown document
@@ -468,6 +479,31 @@ func processImagePaths(content, relPath string) string {
 
 		return "![" + altText + "](" + newPath + ")"
 	})
+}
+
+// renderDrawio serves a .drawio/.dio file through the draw.io viewer. The XML
+// is not embedded in the page — the viewer fetches it from /content/ so the
+// diagram source stays a plain static asset (and stays cacheable).
+func renderDrawio(w http.ResponseWriter, relPath string, navbarTree *TreeNode, funcs template.FuncMap) {
+	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/drawio.html")
+	if err != nil {
+		log.Printf("Template parsing error: %v", err)
+		http.Error(w, "Error loading templates", http.StatusInternalServerError)
+		return
+	}
+
+	page := PageData{
+		Title:       displayName(filepath.Base(relPath)),
+		Navbar:      navbarTree,
+		Content:     "",
+		TOC:         []TOCItem{},
+		CurrentFile: relPath,
+		BasePath:    basePath,
+	}
+
+	if err := tmpl.Execute(w, page); err != nil {
+		log.Printf("Template execution error: %v", err)
+	}
 }
 
 func renderSwagger(w http.ResponseWriter, relPath string, navbarTree *TreeNode, funcs template.FuncMap) {
