@@ -1,3 +1,47 @@
+/* Inter — the UI/prose face. Drawn for screen legibility at small sizes:
+   tall x-height, open apertures, unambiguous I/l/1. Used for body copy,
+   headings and chrome; Space Mono below is kept for code, where fixed
+   advance width and a slashed zero actually earn their keep. */
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/Inter/Inter-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/Inter/Inter-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/Inter/Inter-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/Inter/Inter-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/Inter/Inter-Italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
 /* Space Mono Font Face Definitions */
 @font-face {
     font-family: 'Space Mono';
@@ -53,7 +97,13 @@
     --success-color: #059669;
     --warning-color: #b45309;
     --error-color:   #dc2626;
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-family-mono: 'Space Mono', 'Courier New', Consolas, Monaco, monospace;
+    /* Comfortable measure for prose. Lines much longer than ~75 characters
+       make the eye lose its place on the return sweep. Note `ch` is the width
+       of "0", which is narrower than the average glyph in a proportional face,
+       so this lands around 72 characters rather than 58. */
+    --measure: 58ch;
     --border-radius-sm: 4px;
     --border-radius-md: 6px;
     --border-radius-lg: 8px;
@@ -91,9 +141,9 @@
 }
 
 body {
-    font-family: var(--font-family-mono);
-    font-size: 14px;
-    line-height: 1.5;
+    font-family: var(--font-family-sans);
+    font-size: 16px;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
     background-color: var(--bg-primary);
@@ -109,6 +159,11 @@ body {
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Inter's contextual alternates fix spacing around punctuation and
+       quotes; kerning tidies pairs like "Ta" and "Vo". */
+    font-feature-settings: "cv05" 1, "cv08" 1;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
     overflow: hidden;
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -379,7 +434,7 @@ body.sidebar-collapsed .sidebar::after {
     transition: all var(--transition-normal);
     border-radius: 6px;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.45;
     border: 1px solid transparent;
     font-weight: 500;
 }
@@ -483,7 +538,9 @@ body.sidebar-collapsed .sidebar::after {
     transition: all var(--transition-fast);
     border-radius: 6px;
     font-size: 12px;
-    letter-spacing: 0.01em;
+    /* Uppercase set in a proportional face needs positive tracking to stay
+       readable — the letterforms otherwise crowd at this size. */
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     border: 1px solid transparent;
     user-select: none;
@@ -549,7 +606,7 @@ body.sidebar-collapsed .sidebar::after {
     padding: 6px 10px;
     transition: all var(--transition-fast);
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 14px;
     margin: 1px 0;
     border: 1px solid transparent;
     font-weight: 400;
@@ -610,11 +667,14 @@ body.sidebar-collapsed .sidebar::after {
 .content h5,
 .content h6 {
     color: var(--text-accent);
-    margin-top: 40px;
+    margin-top: 44px;
     margin-bottom: 16px;
     font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: -0.5px;
+    line-height: 1.25;
+    /* Inter is optically tighter than Space Mono, so it needs far less
+       negative tracking — -0.5px here looked cramped at heading sizes. */
+    letter-spacing: -0.011em;
+    text-wrap: balance;
 }
 
 .content h1 {
@@ -648,9 +708,12 @@ body.sidebar-collapsed .sidebar::after {
 .content h4 { font-size: 1.2em; }
 
 .content p {
-    line-height: 1.8;
-    margin-bottom: 16px;
+    line-height: 1.75;
+    margin-bottom: 20px;
     color: var(--text-primary);
+    /* Cap the measure without narrowing tables, code or diagrams, which are
+       constrained separately below. */
+    max-width: var(--measure);
 }
 
 .content pre {
@@ -659,8 +722,10 @@ body.sidebar-collapsed .sidebar::after {
     border-radius: 8px;
     padding: 20px;
     overflow-x: auto;
-    margin: 16px 0;
+    margin: 20px 0;
     font-family: var(--font-family-mono);
+    font-size: 0.85em;
+    line-height: 1.65;
 }
 
 .content code {
@@ -669,7 +734,9 @@ body.sidebar-collapsed .sidebar::after {
     border-radius: 4px;
     font-family: var(--font-family-mono);
     color: var(--text-primary);
-    font-size: 0.9em;
+    /* Space Mono runs optically larger than Inter at the same px size, so
+       inline code is stepped down to sit level with surrounding prose. */
+    font-size: 0.85em;
     border: 1px solid var(--border-color);
 }
 
@@ -693,23 +760,172 @@ body.sidebar-collapsed .sidebar::after {
     overflow: hidden;
 }
 
-/* Post-render: a plain centered container for the SVG. */
-.content .mermaid-rendered {
+/* A rendered diagram becomes a <figure> holding a toolbar and a scrollable
+   viewport. Diagrams are allowed to break out of the prose measure — they are
+   figures, not text, and the reading-width cap would only shrink them. */
+.content .mermaid-figure {
     display: block;
+    position: relative;
     margin: 24px 0;
-    padding: 20px;
+    max-width: 100%;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    overflow-x: auto;
-    text-align: center;
-    font-family: inherit;
-    white-space: normal;
+    overflow: hidden;
 }
 
-.content .mermaid-rendered svg {
-    max-width: 100%;
+/* Architecture diagrams are routinely 2–3× the width of the prose column, so
+   let figures use the padding the prose does not need. Every extra pixel of
+   viewport is a pixel the diagram does not have to be shrunk by. */
+@media (min-width: 1200px) {
+    .content .mermaid-figure {
+        margin-left: -24px;
+        margin-right: -24px;
+    }
+}
+
+/* Top padding reserves a lane for the floating toolbar so it never sits on top
+   of the diagram — short, wide diagrams would otherwise be covered by it. */
+.content .mermaid-viewport {
+    overflow: auto;
+    padding: 46px 12px 12px;
+    max-height: 70vh;
+}
+
+/* Scaled via transform, so the element is told its scaled size explicitly to
+   keep the viewport's scrollbars honest. Block (not inline-block): shrink-wrap
+   would give htmlLabels a narrower width to wrap into than mermaid measured
+   against when it sized the node boxes, clipping long labels. */
+.content .mermaid-canvas {
+    display: block;
+    transform-origin: top left;
+    transition: none;
+}
+
+.content .mermaid-canvas svg {
+    display: block;
+    max-width: none;  /* zoom controls the size, not the column width */
     height: auto;
+}
+
+/* Labels must render at the same size mermaid measured them at when it sized
+   the node boxes (see fontSize in mermaid-init.js). Inheriting the 16px body
+   size overflows the foreignObject and clips long labels. */
+.content .mermaid-canvas foreignObject,
+.content .mermaid-canvas foreignObject div,
+.content .mermaid-canvas .nodeLabel,
+.content .mermaid-canvas .edgeLabel {
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.content .mermaid-viewport.is-panning {
+    cursor: grabbing;
+    user-select: none;
+}
+
+/* ── Diagram toolbar ──────────────────────────────────────────────────────── */
+/* Quiet until the figure is hovered or focused — several diagrams down a page
+   should not read as a wall of buttons. Always visible on touch, where there
+   is no hover to reveal them. */
+.content .mermaid-toolbar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 1px 4px var(--shadow-light);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.content .mermaid-figure:hover .mermaid-toolbar,
+.content .mermaid-figure:focus-within .mermaid-toolbar,
+.content .mermaid-figure.is-zoomed .mermaid-toolbar {
+    opacity: 1;
+}
+
+.content .mermaid-zoom {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-sm);
+}
+
+.content .mermaid-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 28px;
+    padding: 4px 8px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-family-sans);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.content .mermaid-btn:hover {
+    color: var(--text-accent);
+    background: var(--bg-hover);
+}
+
+.content .mermaid-btn:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 1px;
+}
+
+.content .mermaid-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.content .mermaid-zoom-level {
+    min-width: 46px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+}
+
+/* ── Fullscreen ───────────────────────────────────────────────────────────── */
+.content .mermaid-figure.is-fullscreen {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+.content .mermaid-figure.is-fullscreen .mermaid-viewport {
+    flex: 1;
+    max-height: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content .mermaid-figure.is-fullscreen .mermaid-toolbar {
+    opacity: 1;
 }
 
 /* Failed parse: show the message plus the original source. */
@@ -719,16 +935,17 @@ body.sidebar-collapsed .sidebar::after {
     padding: 16px 20px;
     background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-left: 4px solid #b14545;
+    border-left: 4px solid var(--error-color);
     border-radius: 8px;
     overflow-x: auto;
     white-space: normal;
 }
 
 .content .mermaid-error-msg {
-    color: #b14545;
-    font-family: var(--font-family-mono);
+    color: var(--error-color);
+    font-family: var(--font-family-sans);
     font-size: 0.85em;
+    font-weight: 500;
     margin-bottom: 12px;
 }
 
@@ -738,6 +955,22 @@ body.sidebar-collapsed .sidebar::after {
     border: none;
     padding: 0;
     white-space: pre;
+}
+
+/* Touch devices have no hover to reveal the toolbar, and need bigger targets. */
+@media (pointer: coarse) {
+    .content .mermaid-toolbar { opacity: 1; }
+    .content .mermaid-btn { min-height: 40px; min-width: 40px; }
+}
+
+@media (max-width: 768px) {
+    .content .mermaid-viewport { max-height: 60vh; padding: 8px; }
+    .content .mermaid-btn-label { display: none; }
+}
+
+@media print {
+    .content .mermaid-toolbar { display: none !important; }
+    .content .mermaid-viewport { overflow: visible; max-height: none; }
 }
 
 .content blockquote {
@@ -758,12 +991,17 @@ body.sidebar-collapsed .sidebar::after {
 .content ul,
 .content ol {
     margin-left: 24px;
-    margin-bottom: 16px;
-    line-height: 1.8;
+    margin-bottom: 20px;
+    line-height: 1.75;
+    max-width: var(--measure);
 }
 
 .content li {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.content blockquote {
+    max-width: var(--measure);
 }
 
 .content a {
@@ -1581,25 +1819,47 @@ body.drawio-view.sidebar-collapsed {
     flex-direction: column;
     overflow: hidden;
     padding: 0 !important;
+    background: var(--bg-primary);
 }
 
+/* Screen-reader-only label for the small-screen page picker. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────────── */
 .drawio-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     padding: 8px 16px;
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
+    flex-wrap: wrap;
+    row-gap: 8px;
 }
 
-/* Page tabs for multi-page .drawio files; empty (and invisible) for one page. */
+/* Page tabs for multi-page files. Hidden entirely when there is one page. */
 .drawio-pages {
     display: flex;
     gap: 4px;
     overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+    flex: 1 1 auto;
 }
+
+.drawio-pages::-webkit-scrollbar { display: none; }
 
 .drawio-page {
     padding: 5px 12px;
@@ -1607,11 +1867,12 @@ body.drawio-view.sidebar-collapsed {
     color: var(--text-secondary);
     border: 1px solid transparent;
     border-radius: 6px;
-    font-family: var(--font-family-mono);
-    font-size: 12px;
+    font-family: var(--font-family-sans);
+    font-size: 13px;
+    font-weight: 500;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .drawio-page:hover {
@@ -1620,38 +1881,139 @@ body.drawio-view.sidebar-collapsed {
 }
 
 .drawio-page.active {
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-primary);
     border-color: var(--border-color);
+    color: var(--text-accent);
+    font-weight: 600;
+}
+
+/* Under 640px the tabs become a select — a row of tabs cannot survive a phone
+   width once there are more than two or three pages. */
+.drawio-pages-select-wrap { display: none; flex: 1 1 auto; min-width: 0; }
+
+.drawio-pages-select {
+    width: 100%;
+    max-width: 220px;
+    padding: 7px 10px;
+    background: var(--input-bg);
     color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-family: var(--font-family-sans);
+    font-size: 13px;
+    font-weight: 500;
 }
 
 .drawio-actions {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 6px;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
-.drawio-action {
-    padding: 5px 12px;
-    color: var(--text-secondary);
+/* Zoom cluster reads as one segmented control. */
+.drawio-zoom {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: var(--font-family-mono);
-    font-size: 12px;
+    border-radius: var(--border-radius-md);
+}
+
+.drawio-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    min-height: 32px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-md);
+    font-family: var(--font-family-sans);
+    font-size: 13px;
+    font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast);
 }
 
-.drawio-action:hover {
-    background-color: var(--bg-tertiary);
+/* Buttons outside the zoom cluster carry their own outline. */
+.drawio-actions > .drawio-btn {
+    border-color: var(--border-color);
+    background: var(--bg-tertiary);
+}
+
+.drawio-btn:hover:not(:disabled) {
+    color: var(--text-accent);
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+}
+
+.drawio-btn:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 2px;
+}
+
+.drawio-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.drawio-btn svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Fixed width stops the toolbar reflowing as the percentage changes. */
+.drawio-zoom-level {
+    min-width: 54px;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
     color: var(--text-primary);
 }
 
-/* The canvas: scrolls in both directions for diagrams wider than the pane. */
-.drawio-diagram {
+/* ── Stage ────────────────────────────────────────────────────────────────── */
+/* The scroll/pan surface. A subtle dot grid signals "canvas" rather than
+   "document", and gives panning a visible frame of reference. */
+/* Deliberately NOT a flex container. The viewer measures its mount element on
+   init, and a flex item with no intrinsic size collapses to 0×0 before that
+   measurement happens — which silently renders an empty diagram. Block layout
+   with a centred inline-block child keeps the mount measurable. */
+.drawio-stage {
     flex: 1;
     overflow: auto;
-    padding: 20px;
+    position: relative;
+    padding: 24px;
+    text-align: center;
+    background-color: var(--bg-primary);
+    background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+    background-size: 20px 20px;
+    cursor: grab;
+    touch-action: pan-x pan-y;
+}
+
+.drawio-stage.is-panning {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.drawio-diagram {
+    display: inline-block;
+    min-width: 1px;
+    text-align: left;
 }
 
 .drawio-diagram .mxgraph {
@@ -1665,27 +2027,128 @@ body.drawio-view.sidebar-collapsed {
     background: #ffffff;
     border-radius: 8px;
     padding: 16px;
+    box-shadow: 0 2px 12px var(--shadow-medium);
+}
+
+/* Fullscreen: the toolbar travels with the canvas, so controls stay reachable. */
+.drawio-container.is-fullscreen {
+    background: var(--bg-primary);
+}
+
+.drawio-container.is-fullscreen .drawio-stage {
+    padding: 32px;
+}
+
+/* ── Loading and error states ─────────────────────────────────────────────── */
+.drawio-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-tertiary);
+    font-size: 14px;
+}
+
+.drawio-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--text-accent);
+    border-radius: 50%;
+    animation: drawio-spin 0.7s linear infinite;
+}
+
+@keyframes drawio-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawio-spinner { animation-duration: 2s; }
 }
 
 .drawio-error {
     padding: 16px 20px;
-    border-left: 4px solid #b14545;
+    border-left: 4px solid var(--error-color);
+    border-radius: var(--border-radius-md);
     background-color: var(--bg-tertiary);
+    max-width: 640px;
 }
 
 .drawio-error-msg {
-    color: #b14545;
-    font-family: var(--font-family-mono);
-    font-size: 13px;
+    color: var(--error-color);
+    font-family: var(--font-family-sans);
+    font-size: 14px;
+    font-weight: 500;
     margin-bottom: 8px;
 }
 
 .drawio-error pre {
     margin: 0;
+    font-family: var(--font-family-mono);
     font-size: 12px;
+    color: var(--text-secondary);
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+/* Swap tabs for the select before the toolbar has a chance to crowd. */
+@media (max-width: 640px) {
+    .drawio-pages { display: none; }
+    .drawio-pages-select-wrap:not([hidden]) { display: block; }
+}
+
+@media (max-width: 768px) {
+    /* The generic mobile rule targets `body`, which this view's later, equally
+       specific rule would otherwise override — leaving a 280px sidebar column
+       on a phone. Restate it here. */
+    body.drawio-view,
+    body.drawio-view.sidebar-collapsed {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "navbar"
+            "content";
+    }
+
+    .drawio-toolbar {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .drawio-stage { padding: 12px; }
+
+    /* Icon-only buttons: the labels are the first thing to go, and every
+       control keeps a 44px touch target. */
+    .drawio-btn-label { display: none; }
+
+    .drawio-btn {
+        min-height: 40px;
+        min-width: 40px;
+        padding: 8px;
+    }
+
+    .drawio-zoom-level {
+        min-width: 48px;
+        padding: 8px 4px;
+    }
+
+    .drawio-actions { gap: 4px; }
+}
+
+/* Coarse pointers get larger targets regardless of viewport width. */
+@media (pointer: coarse) {
+    .drawio-btn { min-height: 44px; min-width: 44px; }
+    .drawio-page { padding: 9px 14px; }
+}
+
+@media print {
+    .drawio-toolbar { display: none !important; }
+    .drawio-stage {
+        overflow: visible;
+        background: none;
+        padding: 0;
+    }
+}
+
 
 @media print {
     .navbar, .sidebar, .toc { display: none !important; }
