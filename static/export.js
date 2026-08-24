@@ -3,7 +3,10 @@
 function showExportMenu(event) {
   event.stopPropagation();
   const menu = document.getElementById('export-menu');
-  if (!menu) return;
+  if (!menu) {
+    console.warn('Export menu not found');
+    return;
+  }
 
   const isVisible = menu.style.display !== 'none';
   menu.style.display = isVisible ? 'none' : 'block';
@@ -14,25 +17,26 @@ function showExportMenu(event) {
 }
 
 function exportDocument(format) {
-  const html = document.documentElement;
-  const basePath = html.getAttribute('data-base-path') || '';
-  let fullPath = window.location.pathname.replace(basePath, '').replace(/^\//, '');
+  try {
+    const html = document.documentElement;
+    const basePath = html.getAttribute('data-base-path') || '';
+    let fullPath = window.location.pathname.replace(basePath, '').replace(/^\//, '');
 
-  if (!fullPath || fullPath === '/' || fullPath === '') {
-    alert('Cannot export home page');
-    return;
+    if (!fullPath || fullPath === '/' || fullPath === '') {
+      alert('Cannot export home page');
+      return;
+    }
+
+    const exportUrl = `${basePath}/api/export?file=${encodeURIComponent(fullPath)}&format=${encodeURIComponent(format)}`;
+
+    // Use window.location.href for cross-origin downloads
+    window.location.href = exportUrl;
+
+    closeExportMenu();
+  } catch (error) {
+    console.error('Export failed:', error);
+    alert('Failed to export document. Check console for details.');
   }
-
-  const exportUrl = `${basePath}/api/export?file=${encodeURIComponent(fullPath)}&format=${encodeURIComponent(format)}`;
-
-  const link = document.createElement('a');
-  link.href = exportUrl;
-  link.download = '';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  closeExportMenu();
 }
 
 function closeExportMenu() {
