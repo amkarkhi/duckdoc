@@ -369,19 +369,26 @@ function toggleSidebar() {
     const isMobile = window.innerWidth <= 768;
     const body = document.body;
 
+    console.log('=== SIDEBAR TOGGLE CALLED ===');
+    console.log('Mobile mode:', isMobile, 'Width:', window.innerWidth);
+
     if (isMobile) {
       const isOpen = body.classList.toggle("sidebar-mobile-open");
       isOpen ? createOverlay() : removeOverlay();
-      console.log('Mobile sidebar toggled. Open:', isOpen);
+      console.log('✓ Mobile sidebar toggled. Open:', isOpen);
     } else {
-      const isCollapsed = body.classList.toggle("sidebar-collapsed");
-      localStorage.setItem("sidebar-collapsed", String(isCollapsed));
-      console.log('Desktop sidebar toggled. Collapsed:', isCollapsed, 'Current width:', window.innerWidth);
+      const wasCollapsed = body.classList.contains("sidebar-collapsed");
+      body.classList.toggle("sidebar-collapsed");
+      const isNowCollapsed = body.classList.contains("sidebar-collapsed");
+      localStorage.setItem("sidebar-collapsed", String(isNowCollapsed));
+      console.log('✓ Desktop sidebar. Was collapsed:', wasCollapsed, '→ Now collapsed:', isNowCollapsed);
+      console.log('✓ Grid columns should change from: 280px 1fr 240px to: 56px 1fr 240px');
     }
 
     updateSidebarIcon();
+    console.log('=== SIDEBAR TOGGLE COMPLETE ===');
   } catch (e) {
-    console.error('Error in toggleSidebar:', e);
+    console.error('❌ Error in toggleSidebar:', e);
   }
 }
 
