@@ -1,0 +1,319 @@
+{{ define "settings-panel" }}
+<div id="settings-panel" class="settings-panel" style="display: none;">
+  <div class="settings-header">
+    <h3>View Settings</h3>
+    <button class="settings-close" onclick="toggleSettingsPanel()" title="Close">✕</button>
+  </div>
+
+  <div class="settings-section">
+    <label class="settings-label">Font Size</label>
+    <div class="settings-slider-group">
+      <button class="settings-btn-icon" onclick="changeFontSize(-1)" title="Decrease">−</button>
+      <input type="range" id="font-size-slider" min="12" max="20" value="16"
+             oninput="setFontSize(this.value)" class="settings-slider">
+      <span class="settings-value" id="font-size-value">16px</span>
+      <button class="settings-btn-icon" onclick="changeFontSize(1)" title="Increase">+</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <label class="settings-label">Line Height</label>
+    <div class="settings-slider-group">
+      <button class="settings-btn-icon" onclick="changeLineHeight(-0.1)" title="Decrease">−</button>
+      <input type="range" id="line-height-slider" min="1.4" max="2.0" step="0.1" value="1.6"
+             oninput="setLineHeight(this.value)" class="settings-slider">
+      <span class="settings-value" id="line-height-value">1.6</span>
+      <button class="settings-btn-icon" onclick="changeLineHeight(0.1)" title="Increase">+</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <label class="settings-label">Content Width</label>
+    <div class="settings-button-group">
+      <button class="settings-btn settings-btn-sm" onclick="setContentWidth('narrow')" data-width="narrow">Narrow</button>
+      <button class="settings-btn settings-btn-sm active" onclick="setContentWidth('normal')" data-width="normal">Normal</button>
+      <button class="settings-btn settings-btn-sm" onclick="setContentWidth('wide')" data-width="wide">Wide</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <label class="settings-label">Sidebar</label>
+    <div class="settings-checkbox-group">
+      <label class="settings-checkbox">
+        <input type="checkbox" id="sidebar-toggle" checked onchange="toggleSidebarView()">
+        <span>Show Sidebar</span>
+      </label>
+      <label class="settings-checkbox">
+        <input type="checkbox" id="toc-toggle" checked onchange="toggleTOCView()">
+        <span>Show Table of Contents</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <label class="settings-label">Display Options</label>
+    <div class="settings-checkbox-group">
+      <label class="settings-checkbox">
+        <input type="checkbox" id="focus-mode" onchange="toggleFocusMode()">
+        <span>Focus Mode (hide sidebars)</span>
+      </label>
+      <label class="settings-checkbox">
+        <input type="checkbox" id="compact-mode" onchange="toggleCompactMode()">
+        <span>Compact View</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <button class="settings-btn settings-btn-reset" onclick="resetSettings()">Reset to Defaults</button>
+  </div>
+</div>
+
+<style>
+.settings-panel {
+  position: fixed;
+  right: 0;
+  top: 48px;
+  width: 300px;
+  max-width: 100vw;
+  height: calc(100vh - 48px);
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -2px 0 8px var(--shadow-medium);
+  z-index: 100;
+  overflow-y: auto;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+}
+
+.settings-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settings-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.settings-close:hover {
+  color: var(--text-primary);
+}
+
+.settings-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.settings-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.settings-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-slider {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-tertiary);
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-light);
+  transition: all var(--transition-fast);
+}
+
+.settings-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px var(--shadow-medium);
+}
+
+.settings-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px var(--shadow-light);
+  transition: all var(--transition-fast);
+}
+
+.settings-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px var(--shadow-medium);
+}
+
+.settings-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+  font-family: var(--font-family-mono);
+}
+
+.settings-btn-icon {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-fast);
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-btn-icon:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.settings-button-group {
+  display: flex;
+  gap: 6px;
+}
+
+.settings-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.settings-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.settings-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.settings-btn-sm {
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.settings-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.settings-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.settings-btn-reset {
+  width: 100%;
+  padding: 8px;
+  background: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.settings-btn-reset:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .settings-panel {
+    width: 100%;
+    right: 0;
+    box-shadow: none;
+    border-left: none;
+  }
+}
+</style>
+{{ end }}

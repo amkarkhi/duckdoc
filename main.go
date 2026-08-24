@@ -311,7 +311,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 	rendered := blackfriday.Run([]byte(processed), blackfriday.WithExtensions(blackfriday.CommonExtensions|blackfriday.AutoHeadingIDs))
 	htmlContent := template.HTML(promoteMermaidBlocks(string(rendered)))
 
-	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html")
+	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/settings-panel.html")
 	if err != nil {
 		log.Printf("Template parsing error: %v", err)
 		http.Error(w, "Error loading templates", http.StatusInternalServerError)
@@ -623,7 +623,7 @@ func processImagePaths(content, relPath string) string {
 // is not embedded in the page — the viewer fetches it from /content/ so the
 // diagram source stays a plain static asset (and stays cacheable).
 func renderDrawio(w http.ResponseWriter, relPath string, navbarTree *TreeNode, funcs template.FuncMap) {
-	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/drawio.html")
+	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/settings-panel.html", "templates/drawio.html")
 	if err != nil {
 		log.Printf("Template parsing error: %v", err)
 		http.Error(w, "Error loading templates", http.StatusInternalServerError)
@@ -646,7 +646,7 @@ func renderDrawio(w http.ResponseWriter, relPath string, navbarTree *TreeNode, f
 }
 
 func renderSwagger(w http.ResponseWriter, relPath string, navbarTree *TreeNode, funcs template.FuncMap) {
-	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/swagger.html")
+	tmpl, err := template.New("layout").Funcs(funcs).ParseFiles("templates/layout.html", "templates/sidebar.html", "templates/settings-panel.html", "templates/swagger.html")
 	if err != nil {
 		log.Printf("Template parsing error: %v", err)
 		http.Error(w, "Error loading templates", http.StatusInternalServerError)
