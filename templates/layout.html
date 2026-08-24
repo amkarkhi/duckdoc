@@ -1,6 +1,6 @@
 {{ define "layout" }}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-base-path="{{ .BasePath }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="{{ .BasePath }}/static/duckdoclogo.ico" />
     <link rel="stylesheet" href="{{ .BasePath }}/static/styles.css" />
     <script src="{{ .BasePath }}/static/sidebar.js" defer></script>
+    <script src="{{ .BasePath }}/static/search.js" defer></script>
   </head>
   <body{{ if eq .CurrentFile "README.md" }} class="home-view"{{ end }}>
     <nav class="navbar">
@@ -21,11 +22,23 @@
           </div>
           <span>DuckDoc</span>
         </div>
-        {{ if ne .CurrentFile "README.md" }}
-        <div class="navbar-file-path">
-          <span class="file-name">{{ if .CurrentFile }}{{ .CurrentFile }}{{ else }}Documentation{{ end }}</span>
+      </div>
+      <div class="navbar-center">
+        <div class="navbar-search-wrapper">
+          <svg class="navbar-search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <input
+            id="navbar-search"
+            type="text"
+            placeholder="Search (⌘K)"
+            autocomplete="off"
+            spellcheck="false"
+            oninput="navbarSearch(this.value)"
+          />
+          <div id="navbar-search-results" class="navbar-search-results" style="display:none"></div>
         </div>
-        {{ end }}
       </div>
       <div class="navbar-right">
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
@@ -35,6 +48,18 @@
       </div>
     </nav>
     {{ template "sidebar.html" . }}
+    {{ if ne .CurrentFile "README.md" }}
+    <div class="breadcrumb-container">
+      {{ range $i, $item := .Breadcrumb }}
+        {{ if gt $i 0 }}<span class="breadcrumb-sep">/</span>{{ end }}
+        {{ if eq $i (len $.Breadcrumb | add -1) }}
+          <span class="breadcrumb-current">{{ $item.Name }}</span>
+        {{ else }}
+          <a href="{{ $.BasePath }}{{ $item.Path }}" class="breadcrumb-link">{{ $item.Name }}</a>
+        {{ end }}
+      {{ end }}
+    </div>
+    {{ end }}
     {{ if eq .CurrentFile "README.md" }}
     <main class="content home-content">
       <div class="home-header">

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -33,6 +34,18 @@ type PageData struct {
 	TOC         []TOCItem
 	CurrentFile string
 	BasePath    string
+	Breadcrumb  []BreadcrumbItem
+}
+
+type BreadcrumbItem struct {
+	Name string
+	Path string
+}
+
+type SearchResult struct {
+	Path    string `json:"path"`
+	Name    string `json:"name"`
+	Preview string `json:"preview"`
 }
 
 // templateFuncs is populated at request time to carry currentFile for active-state highlighting
@@ -40,6 +53,9 @@ func makeTemplateFuncs(currentFile string) template.FuncMap {
 	return template.FuncMap{
 		"defineTree": func(node *TreeNode) template.HTML {
 			return template.HTML(renderTreeHTML(node, currentFile))
+		},
+		"add": func(a, b int) int {
+			return a + b
 		},
 	}
 }
@@ -64,6 +80,14 @@ var basePath = func() string {
 	return "/" + p
 }()
 
+var searchIndex []SearchIndexEntry
+
+type SearchIndexEntry struct {
+	Path    string
+	Name    string
+	Content string
+}
+
 // url joins basePath with an absolute in-app path ("/static/styles.css").
 func url(p string) string {
 	if !strings.HasPrefix(p, "/") {
@@ -78,9 +102,122 @@ func url(p string) string {
 	return basePath + p
 }
 
+// buildBreadcrumb creates breadcrumb navigation from a file path
+func buildBreadcrumb(filePath string) []BreadcrumbItem {
+	if filePath == "" || filePath == "README.md" {
+		return []BreadcrumbItem{{Name: "Home", Path: "/"}}
+	}
+
+	parts := strings.Split(filePath, "/")
+	var breadcrumbs []BreadcrumbItem
+	breadcrumbs = append(breadcrumbs, BreadcrumbItem{Name: "Home", Path: "/"})
+
+	for i, part := range parts {
+		name := strings.TrimSuffix(part, filepath.Ext(part))
+		path := "/" + strings.Join(parts[:i+1], "/")
+		breadcrumbs = append(breadcrumbs, BreadcrumbItem{Name: name, Path: path})
+	}
+
+	return breadcrumbs
+}
+
+// initSearchIndex builds the search index on startup
+func initSearchIndex() error {
+	resolved, err := filepath.EvalSymlinks(contentDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+
+	err = filepath.Walk(resolved, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+
+		ext := filepath.Ext(path)
+		if ext != ".md" && ext != ".mmd" && ext != ".mermaid" {
+			return nil
+		}
+
+		relPath, err := filepath.Rel(resolved, path)
+		if err != nil {
+			return err
+		}
+
+		b, err := os.ReadFile(path)
+		if err != nil {
+			return nil
+		}
+
+		searchIndex = append(searchIndex, SearchIndexEntry{
+			Path:    "/" + relPath,
+			Name:    displayName(filepath.Base(relPath)),
+			Content: string(b),
+		})
+		return nil
+	})
+
+	return err
+}
+
+// apiSearch handles search requests
+func apiSearch(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	q := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("q")))
+	if len(q) < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"error": "query required"})
+		return
+	}
+
+	var results []SearchResult
+	for _, entry := range searchIndex {
+		if strings.Contains(strings.ToLower(entry.Name), q) || strings.Contains(strings.ToLower(entry.Content), q) {
+			// Get preview: first 150 chars of content
+			preview := entry.Content
+			if idx := strings.Index(strings.ToLower(preview), q); idx != -1 {
+				start := idx - 40
+				if start < 0 {
+					start = 0
+				}
+				end := idx + 110
+				if end > len(preview) {
+					end = len(preview)
+				}
+				preview = "..." + strings.TrimSpace(preview[start:end]) + "..."
+			} else if len(preview) > 150 {
+				preview = strings.TrimSpace(preview[:150]) + "..."
+			}
+
+			results = append(results, SearchResult{
+				Path:    entry.Path,
+				Name:    entry.Name,
+				Preview: preview,
+			})
+
+			if len(results) >= 20 {
+				break
+			}
+		}
+	}
+
+	json.NewEncoder(w).Encode(results)
+}
+
 func main() {
+	if err := initSearchIndex(); err != nil {
+		log.Printf("Warning: Failed to build search index: %v", err)
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", serveMarkdown)
+	mux.HandleFunc("/api/search", apiSearch)
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir(contentDir))))
 
@@ -188,6 +325,7 @@ func serveMarkdown(w http.ResponseWriter, r *http.Request) {
 		TOC:         toc,
 		CurrentFile: relPath,
 		BasePath:    basePath,
+		Breadcrumb:  buildBreadcrumb(relPath),
 	}
 
 	if err := tmpl.Execute(w, page); err != nil {
@@ -499,6 +637,7 @@ func renderDrawio(w http.ResponseWriter, relPath string, navbarTree *TreeNode, f
 		TOC:         []TOCItem{},
 		CurrentFile: relPath,
 		BasePath:    basePath,
+		Breadcrumb:  buildBreadcrumb(relPath),
 	}
 
 	if err := tmpl.Execute(w, page); err != nil {
@@ -521,6 +660,7 @@ func renderSwagger(w http.ResponseWriter, relPath string, navbarTree *TreeNode, 
 		TOC:         []TOCItem{},
 		CurrentFile: relPath,
 		BasePath:    basePath,
+		Breadcrumb:  buildBreadcrumb(relPath),
 	}
 
 	if err := tmpl.Execute(w, page); err != nil {
