@@ -11,6 +11,7 @@ DuckDoc is a comprehensive documentation viewing and management application. It 
 2. **Markdown Viewer**:
    - Renders markdown content in the main area.
    - Supports heading navigation via clickable TOC.
+   - Mermaid diagram support for visualizations.
 
 3. **Swagger/OpenAPI Documentation Viewer**:
    - Automatically detects and renders Swagger/OpenAPI specification files (`.yaml`, `.yml`).
@@ -22,8 +23,23 @@ DuckDoc is a comprehensive documentation viewing and management application. It 
    - Displays an overview of all headers and subheaders.
    - Sticky TOC on the right side for quick navigation.
 
-5. **Search Functionality**:
-   - Filters files and folders in the tree view based on user input.
+5. **Global Full-Text Search** ✨ *NEW*:
+   - Search across all documentation files instantly.
+   - Fuzzy matching on filename and content.
+   - Live results as you type.
+   - **Keyboard shortcut**: `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux) to search from anywhere.
+   - RESTful API: `GET /api/search?q=query`
+
+6. **Breadcrumb Navigation** ✨ *NEW*:
+   - Shows your location in the documentation hierarchy.
+   - Clickable breadcrumbs to jump to parent folders.
+   - Auto-generated from file path.
+
+7. **Beautiful Design** ✨ *NEW*:
+   - Warm, professional color palette (#FCFBF9 background, #A8563C accent).
+   - Dark mode support with inverted warm palette.
+   - Inspired by Markdown Reader for optimal reading experience.
+   - Responsive design for mobile, tablet, and desktop.
 
 ## How to Run
 
@@ -87,10 +103,49 @@ The file will be automatically detected and rendered with an interactive Swagger
 
 Example Swagger files can be found in `content/search-gateway/doc/swagger.yaml`.
 
+## New Features (v2.0)
+
+### Full-Text Search API
+
+- **Endpoint**: `GET /api/search?q=<query>`
+- **Behavior**: Indexes all `.md` and `.mmd` files on startup, enables instant search
+- **Usage**: Type in the navbar search bar or press `Cmd+K` / `Ctrl+K` to focus search
+- **Response**: JSON array with `path`, `name`, and `preview` for up to 20 results
+
+```bash
+# Example API call
+curl 'http://localhost:8080/api/search?q=api'
+```
+
+### Breadcrumb Navigation
+
+- Auto-generated from file path
+- Appears below navbar on every page (except home)
+- Clickable links to navigate to parent folders
+- Example: `Home / atlas / docs / README`
+
+### Design System
+
+- **Color Palette**: Warm, earthy tones inspired by Markdown Reader
+  - Primary background: #FCFBF9
+  - Accent: #A8563C (warm brown/rust)
+  - Text: #171614 (nearly black)
+- **Dark Mode**: Automatically inverts palette while maintaining readability
+- **Responsive**: Adapts to mobile, tablet, and desktop screens
+
 ## Requirements
 
 - Go programming language installed.
 
+## Recent Changes
+
+- ✨ Added full-text search across all documentation
+- ✨ Added breadcrumb navigation for context
+- 🎨 Updated design palette to warm, professional theme
+- ⌨️ Added Cmd+K / Ctrl+K search shortcut
+- 📱 Improved responsive design
+
 ## Author
 
-Developed by AMK.
+Developed by AMK and enhanced with search, breadcrumbs, and design improvements.
+
