@@ -2361,6 +2361,7 @@ body.sidebar-hidden.toc-hidden {
 /* Focus mode hides both sidebars */
 body.focus-mode {
     grid-template-columns: 1fr;
+    grid-template-rows: 48px auto 1fr;
     grid-template-areas:
         "navbar"
         "breadcrumb"
@@ -2370,6 +2371,32 @@ body.focus-mode {
 body.focus-mode .sidebar,
 body.focus-mode .toc {
     display: none !important;
+}
+
+body.focus-mode .content {
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Focus mode responsive */
+@media (max-width: 1200px) {
+    body.focus-mode {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "navbar"
+            "breadcrumb"
+            "content";
+    }
+}
+
+@media (max-width: 768px) {
+    body.focus-mode {
+        grid-template-columns: 1fr;
+    }
+
+    body.focus-mode .content {
+        padding: 16px;
+    }
 }
 
 /* Compact mode reduces padding/spacing */

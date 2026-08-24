@@ -30,15 +30,21 @@ function saveSettings(settings) {
 
 // Apply all settings to the DOM
 function applySettings(settings = loadSettings()) {
-  // Font size
+  // Font size - apply to both html and body for better inheritance
   document.documentElement.style.fontSize = settings.fontSize + 'px';
-  document.getElementById('font-size-slider').value = settings.fontSize;
-  document.getElementById('font-size-value').textContent = settings.fontSize + 'px';
+  document.body.style.fontSize = settings.fontSize + 'px';
+  const fontSizeSlider = document.getElementById('font-size-slider');
+  const fontSizeValue = document.getElementById('font-size-value');
+  if (fontSizeSlider) fontSizeSlider.value = settings.fontSize;
+  if (fontSizeValue) fontSizeValue.textContent = settings.fontSize + 'px';
 
-  // Line height
+  // Line height - apply to both html and body for better inheritance
   document.documentElement.style.lineHeight = settings.lineHeight;
-  document.getElementById('line-height-slider').value = settings.lineHeight;
-  document.getElementById('line-height-value').textContent = settings.lineHeight.toFixed(1);
+  document.body.style.lineHeight = settings.lineHeight;
+  const lineHeightSlider = document.getElementById('line-height-slider');
+  const lineHeightValue = document.getElementById('line-height-value');
+  if (lineHeightSlider) lineHeightSlider.value = settings.lineHeight;
+  if (lineHeightValue) lineHeightValue.textContent = settings.lineHeight.toFixed(1);
 
   // Content width
   setContentWidth(settings.contentWidth);
@@ -94,7 +100,9 @@ function changeFontSize(delta) {
 
 function setFontSize(size) {
   document.documentElement.style.fontSize = size + 'px';
-  document.getElementById('font-size-value').textContent = size + 'px';
+  document.body.style.fontSize = size + 'px';
+  const fontSizeValue = document.getElementById('font-size-value');
+  if (fontSizeValue) fontSizeValue.textContent = size + 'px';
   const settings = loadSettings();
   settings.fontSize = parseInt(size);
   saveSettings(settings);
@@ -110,7 +118,9 @@ function changeLineHeight(delta) {
 
 function setLineHeight(height) {
   document.documentElement.style.lineHeight = height;
-  document.getElementById('line-height-value').textContent = height.toFixed(1);
+  document.body.style.lineHeight = height;
+  const lineHeightValue = document.getElementById('line-height-value');
+  if (lineHeightValue) lineHeightValue.textContent = height.toFixed(1);
   const settings = loadSettings();
   settings.lineHeight = parseFloat(height);
   saveSettings(settings);
@@ -193,10 +203,9 @@ function resetSettings() {
   }
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  applySettings();
-});
+// Initialize immediately since this script is at the end of body
+// All DOM elements should be available
+applySettings();
 
 // Close settings panel when clicking outside
 document.addEventListener('click', (e) => {
