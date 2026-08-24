@@ -30,17 +30,21 @@ function saveSettings(settings) {
 
 // Apply all settings to the DOM
 function applySettings(settings = loadSettings()) {
-  // Font size - apply to both html and body for better inheritance
-  document.documentElement.style.fontSize = settings.fontSize + 'px';
+  // Font size - apply to content and main text elements only (not documentElement which causes zoom)
   document.body.style.fontSize = settings.fontSize + 'px';
+  const content = document.querySelector('.content');
+  if (content) content.style.fontSize = settings.fontSize + 'px';
+
   const fontSizeSlider = document.getElementById('font-size-slider');
   const fontSizeValue = document.getElementById('font-size-value');
   if (fontSizeSlider) fontSizeSlider.value = settings.fontSize;
   if (fontSizeValue) fontSizeValue.textContent = settings.fontSize + 'px';
 
-  // Line height - apply to both html and body for better inheritance
-  document.documentElement.style.lineHeight = settings.lineHeight;
+  // Line height - apply to body and content for text readability
   document.body.style.lineHeight = settings.lineHeight;
+  const content2 = document.querySelector('.content');
+  if (content2) content2.style.lineHeight = settings.lineHeight;
+
   const lineHeightSlider = document.getElementById('line-height-slider');
   const lineHeightValue = document.getElementById('line-height-value');
   if (lineHeightSlider) lineHeightSlider.value = settings.lineHeight;
@@ -99,8 +103,10 @@ function changeFontSize(delta) {
 }
 
 function setFontSize(size) {
-  document.documentElement.style.fontSize = size + 'px';
   document.body.style.fontSize = size + 'px';
+  const content = document.querySelector('.content');
+  if (content) content.style.fontSize = size + 'px';
+
   const fontSizeValue = document.getElementById('font-size-value');
   if (fontSizeValue) fontSizeValue.textContent = size + 'px';
   const settings = loadSettings();
@@ -117,8 +123,10 @@ function changeLineHeight(delta) {
 }
 
 function setLineHeight(height) {
-  document.documentElement.style.lineHeight = height;
   document.body.style.lineHeight = height;
+  const content = document.querySelector('.content');
+  if (content) content.style.lineHeight = height;
+
   const lineHeightValue = document.getElementById('line-height-value');
   if (lineHeightValue) lineHeightValue.textContent = height.toFixed(1);
   const settings = loadSettings();
