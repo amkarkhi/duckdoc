@@ -78,22 +78,32 @@ function updateTOCHighlight() {
 }
 
 function onFolderClick(e) {
-  e.stopPropagation();
-  e.preventDefault();
+  try {
+    e.stopPropagation();
+    e.preventDefault();
 
-  const folder = e.currentTarget.parentElement;
-  const path = getFolderPath(folder);
-  const isExpanded = folder.classList.contains("expanded");
+    const folderName = e.currentTarget;
+    const folder = folderName.parentElement;
+    const path = getFolderPath(folder);
+    const isCurrentlyExpanded = folder.classList.contains("expanded");
 
-  folder.classList.toggle("expanded", !isExpanded);
+    // Toggle the expanded class
+    const willBeExpanded = !isCurrentlyExpanded;
+    folder.classList.toggle("expanded", willBeExpanded);
 
-  let saved = getSavedFolderPaths();
-  if (isExpanded) {
-    saved = saved.filter((p) => p !== path);
-  } else if (!saved.includes(path)) {
-    saved.push(path);
+    // Save state to localStorage
+    let saved = getSavedFolderPaths();
+    if (willBeExpanded && !saved.includes(path)) {
+      saved.push(path);
+    } else if (!willBeExpanded && saved.includes(path)) {
+      saved = saved.filter((p) => p !== path);
+    }
+    localStorage.setItem("expandedFolders", JSON.stringify(saved));
+
+    console.log('Folder toggle:', path, 'Now:', willBeExpanded ? 'expanded' : 'collapsed');
+  } catch (error) {
+    console.error('Error in onFolderClick:', error);
   }
-  localStorage.setItem("expandedFolders", JSON.stringify(saved));
 }
 
 function getFolderPath(folderEl) {

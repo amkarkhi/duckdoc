@@ -856,11 +856,18 @@ body.sidebar-collapsed .sidebar {
     border-left: 1px solid var(--border-color);
     padding-left: 8px;
     /* collapsed by default */
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height var(--transition-normal), opacity var(--transition-normal);
+    pointer-events: none;
 }
 
 .tree-menu .folder.expanded > ul {
-    display: block;
+    max-height: 2000px;
+    opacity: 1;
+    pointer-events: auto;
+    transition: max-height var(--transition-normal), opacity var(--transition-normal);
 }
 
 .tree-menu .file a {
