@@ -77,30 +77,30 @@
 
 /* CSS Variables */
 :root {
-    /* Light — modern, clean palette */
-    --bg-primary:    #FFFFFF;   /* pure white */
-    --bg-secondary:  #F8FAFC;   /* light slate background */
-    --bg-tertiary:   #F1F5F9;   /* code blocks, inputs */
-    --bg-quaternary: #E2E8F0;   /* deepest surfaces */
-    --bg-hover:      #F0F4F8;   /* hover state */
-    --bg-active:     #E8ECFF;   /* active state */
-    --text-primary:  #0F172A;   /* dark slate */
-    --text-secondary:#334155;   /* muted slate */
-    --text-tertiary: #64748B;   /* light slate */
-    --text-muted:    #94A3B8;   /* very muted */
-    --text-disabled: #CBD5E1;   /* disabled text */
-    --accent:        #3B82F6;   /* modern blue */
-    --accent-hover:  #2563EB;   /* darker blue */
-    --accent-light:  rgba(59, 130, 246, 0.12);
-    --accent-sel:    rgba(59, 130, 246, 0.08);
-    --border-color:  #E2E8F0;   /* slate border */
-    --border-soft:   #F1F5F9;   /* softer border */
+    /* Light — vibrant, modern palette inspired by Digikala brand */
+    --bg-primary:    #FAFBFC;   /* off-white */
+    --bg-secondary:  #F3F4F6;   /* light gray */
+    --bg-tertiary:   #EBEBF0;   /* code blocks, inputs */
+    --bg-quaternary: #DFE3E8;   /* deepest surfaces */
+    --bg-hover:      #F0F2F5;   /* hover state */
+    --bg-active:     #E7EEFF;   /* active state */
+    --text-primary:  #1A1A1A;   /* deep black */
+    --text-secondary:#404040;   /* dark gray */
+    --text-tertiary: #757575;   /* medium gray */
+    --text-muted:    #9E9E9E;   /* light gray */
+    --text-disabled: #BDBDBD;   /* disabled text */
+    --accent:        #EE5A24;   /* vibrant orange (Digikala brand) */
+    --accent-hover:  #D63B1C;   /* darker orange */
+    --accent-light:  rgba(238, 90, 36, 0.12);
+    --accent-sel:    rgba(238, 90, 36, 0.08);
+    --border-color:  #E0E0E0;   /* light border */
+    --border-soft:   #F0F0F0;   /* softer border */
     --input-bg:      #FFFFFF;
-    --shadow-light:  rgba(15, 23, 42, 0.05);
-    --shadow-medium: rgba(15, 23, 42, 0.1);
-    --success-color: #10B981;
-    --warning-color: #F59E0B;
-    --error-color:   #EF4444;
+    --shadow-light:  rgba(26, 26, 26, 0.04);
+    --shadow-medium: rgba(26, 26, 26, 0.08);
+    --success-color: #059669;
+    --warning-color: #D97706;
+    --error-color:   #DC2626;
     --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-family-mono: 'Space Mono', 'Courier New', Consolas, Monaco, monospace;
     --measure: 58ch;
@@ -113,30 +113,30 @@
 }
 
 [data-theme="dark"] {
-    /* Dark — modern dark slate palette */
-    --bg-primary:    #0F172A;   /* dark slate */
-    --bg-secondary:  #1E293B;   /* sidebar background */
-    --bg-tertiary:   #334155;   /* code blocks */
-    --bg-quaternary: #475569;   /* deepest surfaces */
-    --bg-hover:      #1E293B;   /* hover state */
-    --bg-active:     #334155;   /* active state */
-    --text-primary:  #F1F5F9;   /* light slate */
-    --text-secondary:#CBD5E1;   /* muted */
-    --text-tertiary: #94A3B8;   /* more muted */
-    --text-muted:    #64748B;   /* very muted */
-    --text-disabled: #475569;   /* disabled */
-    --accent:        #60A5FA;   /* lighter blue for dark mode */
-    --accent-hover:  #93C5FD;   /* lighter hover */
-    --accent-light:  rgba(96, 165, 250, 0.15);
-    --accent-sel:    rgba(96, 165, 250, 0.08);
-    --border-color:  #334155;   /* slate border */
-    --border-soft:   #1E293B;   /* soft dark border */
-    --input-bg:      #1E293B;
-    --shadow-light:  rgba(0, 0, 0, 0.3);
-    --shadow-medium: rgba(0, 0, 0, 0.5);
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color:   #f87171;
+    /* Dark — rich, premium dark palette with orange accent */
+    --bg-primary:    #0D1117;   /* pure dark */
+    --bg-secondary:  #161B22;   /* sidebar background */
+    --bg-tertiary:   #21262D;   /* code blocks */
+    --bg-quaternary: #30363D;   /* deepest surfaces */
+    --bg-hover:      #1C2128;   /* hover state */
+    --bg-active:     #262B34;   /* active state */
+    --text-primary:  #E6EDF3;   /* light off-white */
+    --text-secondary:#8B949E;   /* muted gray */
+    --text-tertiary: #6E7681;   /* more muted */
+    --text-muted:    #484F58;   /* very muted */
+    --text-disabled: #30363D;   /* disabled */
+    --accent:        #FF8A50;   /* bright orange for dark mode */
+    --accent-hover:  #FFAA70;   /* lighter orange */
+    --accent-light:  rgba(255, 138, 80, 0.15);
+    --accent-sel:    rgba(255, 138, 80, 0.08);
+    --border-color:  #30363D;   /* dark border */
+    --border-soft:   #21262D;   /* soft dark border */
+    --input-bg:      #0D1117;
+    --shadow-light:  rgba(0, 0, 0, 0.4);
+    --shadow-medium: rgba(0, 0, 0, 0.6);
+    --success-color: #1f7e34;
+    --warning-color: #b37e06;
+    --error-color:   #da3633;
 }
 
 /* Reset */

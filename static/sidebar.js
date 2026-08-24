@@ -416,9 +416,8 @@ function toggleTheme() {
 }
 
 function initializeTheme() {
-  const theme = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-theme", theme);
   const icon = document.getElementById("theme-icon");
+  const theme = document.documentElement.getAttribute("data-theme") || "light";
   if (icon) icon.textContent = theme === "light" ? "🌞" : "🌙";
 }
 
