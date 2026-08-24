@@ -2623,13 +2623,14 @@ body.sidebar-hidden.toc-hidden {
 
 /* Focus mode hides both sidebars */
 body.focus-mode {
-    grid-template-columns: 1fr;
-    grid-template-rows: 48px auto 1fr;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 48px auto 1fr !important;
     grid-template-areas:
         "navbar"
         "breadcrumb"
-        "content";
+        "content" !important;
     height: 100vh;
+    width: 100vw;
 }
 
 body.focus-mode .sidebar,
@@ -2676,13 +2677,14 @@ body.focus-mode .breadcrumb-current {
 }
 
 body.focus-mode .content {
-    grid-area: content;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 48px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    grid-area: content !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 40px 48px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
 }
 
 body.focus-mode .content h1 {
