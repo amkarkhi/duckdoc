@@ -2844,6 +2844,56 @@ body.compact-mode .breadcrumb-container {
     }
 }
 
+/* ===== RESIZE HANDLES ===== */
+.resize-handle {
+    position: absolute;
+    cursor: col-resize;
+    user-select: none;
+    background: transparent;
+    z-index: 10;
+}
+
+.sidebar-resize {
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    transition: background-color var(--transition-fast);
+}
+
+.sidebar-resize:hover {
+    background: var(--accent);
+}
+
+.sidebar-resize.active {
+    background: var(--accent);
+}
+
+.toc-resize {
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    transition: background-color var(--transition-fast);
+}
+
+.toc-resize:hover {
+    background: var(--accent);
+}
+
+.toc-resize.active {
+    background: var(--accent);
+}
+
+/* ===== RESIZABLE PANELS ===== */
+.sidebar, .toc {
+    position: relative;
+}
+
+body.resizing {
+    user-select: none;
+}
+
 @media print {
     .navbar, .sidebar, .toc, .settings-panel { display: none !important; }
     .breadcrumb-container { display: none !important; }

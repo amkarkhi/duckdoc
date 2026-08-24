@@ -14,15 +14,14 @@ function showExportMenu(event) {
 }
 
 function exportDocument(format) {
-  const currentFile = window.location.pathname.replace(/^.*\//, '');
-  if (!currentFile || currentFile === '/') {
+  const html = document.documentElement;
+  const basePath = html.getAttribute('data-base-path') || '';
+  let fullPath = window.location.pathname.replace(basePath, '').replace(/^\//, '');
+
+  if (!fullPath || fullPath === '/' || fullPath === '') {
     alert('Cannot export home page');
     return;
   }
-
-  const url = new URL(window.location);
-  const basePath = url.searchParams.get('basePath') || '';
-  const fullPath = window.location.pathname.replace(basePath, '').replace(/^\//, '');
 
   const exportUrl = `${basePath}/api/export?file=${encodeURIComponent(fullPath)}&format=${encodeURIComponent(format)}`;
 
