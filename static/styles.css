@@ -445,17 +445,18 @@ body.sidebar-collapsed {
     stroke: currentColor;
 }
 
-.export-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
+.navbar-export-btn + .export-menu {
+    position: fixed;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
     box-shadow: 0 4px 12px var(--shadow-medium);
-    margin-top: 8px;
-    z-index: 1000;
     min-width: 160px;
+    z-index: 1001;
+}
+
+.export-menu {
+    display: none;
 }
 
 .export-option {

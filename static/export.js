@@ -3,16 +3,24 @@
 function showExportMenu(event) {
   event.stopPropagation();
   const menu = document.getElementById('export-menu');
+  const btn = event.currentTarget;
+
   if (!menu) {
     console.warn('Export menu not found');
     return;
   }
 
   const isVisible = menu.style.display !== 'none';
-  menu.style.display = isVisible ? 'none' : 'block';
 
   if (!isVisible) {
-    menu.focus();
+    // Position menu below button
+    const rect = btn.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.top = (rect.bottom + 8) + 'px';
+    menu.style.right = (window.innerWidth - rect.right) + 'px';
+    menu.style.display = 'block';
+  } else {
+    menu.style.display = 'none';
   }
 }
 
