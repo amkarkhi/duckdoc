@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initializeSidebar() {
   const isMobile = window.innerWidth <= 768;
+  console.log('Initializing sidebar. Mobile:', isMobile, 'Width:', window.innerWidth);
   if (!isMobile) {
     const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+    console.log('Restoring sidebar state. Collapsed:', isCollapsed);
     if (isCollapsed) {
       document.body.classList.add("sidebar-collapsed");
     }
@@ -363,18 +365,24 @@ function initializeSlashFocus() {
 // ── Sidebar toggle ─────────────────────────────────────────────────────────────
 
 function toggleSidebar() {
-  const isMobile = window.innerWidth <= 768;
-  const body = document.body;
+  try {
+    const isMobile = window.innerWidth <= 768;
+    const body = document.body;
 
-  if (isMobile) {
-    const isOpen = body.classList.toggle("sidebar-mobile-open");
-    isOpen ? createOverlay() : removeOverlay();
-  } else {
-    const isCollapsed = body.classList.toggle("sidebar-collapsed");
-    localStorage.setItem("sidebar-collapsed", isCollapsed);
+    if (isMobile) {
+      const isOpen = body.classList.toggle("sidebar-mobile-open");
+      isOpen ? createOverlay() : removeOverlay();
+      console.log('Mobile sidebar toggled. Open:', isOpen);
+    } else {
+      const isCollapsed = body.classList.toggle("sidebar-collapsed");
+      localStorage.setItem("sidebar-collapsed", String(isCollapsed));
+      console.log('Desktop sidebar toggled. Collapsed:', isCollapsed, 'Current width:', window.innerWidth);
+    }
+
+    updateSidebarIcon();
+  } catch (e) {
+    console.error('Error in toggleSidebar:', e);
   }
-
-  updateSidebarIcon();
 }
 
 function createOverlay() {
