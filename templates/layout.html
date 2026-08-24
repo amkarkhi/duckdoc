@@ -92,6 +92,14 @@
         />
       </div>
       <div id="hero-search-results" class="home-search-results" style="display:none"></div>
+
+      <div class="home-jump-back">
+        <h2 class="home-section-title">Jump Back</h2>
+        <p class="home-section-hint">Quick links to recently viewed documents</p>
+        <div id="jump-back-list" class="jump-back-list">
+          <div class="jump-back-empty">No recently viewed documents</div>
+        </div>
+      </div>
     </main>
     {{ else }}
     <main class="content">{{ .Content }}</main>
@@ -108,6 +116,7 @@
     {{ end }}
     <script src="{{ .BasePath }}/static/mermaid.min.js"></script>
     <script src="{{ .BasePath }}/static/mermaid-init.js" defer></script>
+    <script src="{{ .BasePath }}/static/jump-back.js"></script>
     <script src="{{ .BasePath }}/static/settings.js"></script>
   </body>
 </html>
