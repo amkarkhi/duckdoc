@@ -2629,60 +2629,235 @@ body.focus-mode {
         "navbar"
         "breadcrumb"
         "content";
+    height: 100vh;
 }
 
 body.focus-mode .sidebar,
 body.focus-mode .toc {
     display: none !important;
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
 }
 
 body.focus-mode .breadcrumb-container {
     grid-area: breadcrumb;
     display: block !important;
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--border-soft);
-    background: var(--bg-primary);
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    flex-shrink: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+body.focus-mode .breadcrumb-container a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+body.focus-mode .breadcrumb-container a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+body.focus-mode .breadcrumb-sep {
+    color: var(--text-tertiary);
+    margin: 0 8px;
+}
+
+body.focus-mode .breadcrumb-current {
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 body.focus-mode .content {
-    margin: 0 auto;
+    grid-area: content;
     width: 100%;
-    padding: 32px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* Focus mode responsive */
-@media (max-width: 1200px) {
+body.focus-mode .content h1 {
+    font-size: 2.2em;
+    margin-top: 1.2em;
+    margin-bottom: 0.8em;
+}
+
+body.focus-mode .content h2 {
+    font-size: 1.8em;
+    margin-top: 1.4em;
+    margin-bottom: 0.6em;
+}
+
+body.focus-mode .content h3 {
+    font-size: 1.4em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+body.focus-mode .content p {
+    line-height: 1.8;
+    margin-bottom: 1.2em;
+}
+
+body.focus-mode .content code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+body.focus-mode .content pre {
+    background: var(--bg-tertiary);
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+}
+
+body.focus-mode .content blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 16px;
+    margin: 1.5em 0;
+    color: var(--text-secondary);
+}
+
+body.focus-mode .content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+}
+
+body.focus-mode .content th,
+body.focus-mode .content td {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+body.focus-mode .content th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+}
+
+/* Focus mode responsive - Desktop */
+@media (max-width: 1440px) {
+    body.focus-mode .content {
+        padding: 36px 40px;
+        max-width: 850px;
+    }
+}
+
+/* Focus mode responsive - Tablet */
+@media (max-width: 1024px) {
     body.focus-mode {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "navbar"
-            "breadcrumb"
-            "content";
+        grid-template-rows: 48px auto 1fr;
     }
 
     body.focus-mode .content {
-        padding: 24px 32px;
+        padding: 28px 32px;
+        max-width: 800px;
+    }
+
+    body.focus-mode .content h1 {
+        font-size: 1.9em;
+    }
+
+    body.focus-mode .content h2 {
+        font-size: 1.6em;
+    }
+
+    body.focus-mode .breadcrumb-container {
+        padding: 12px 20px;
+        font-size: 12px;
     }
 }
 
+/* Focus mode responsive - Mobile */
 @media (max-width: 768px) {
     body.focus-mode {
         grid-template-columns: 1fr;
+        grid-template-rows: 48px auto 1fr;
+        height: auto;
     }
 
     body.focus-mode .content {
-        padding: 16px 20px;
+        padding: 20px 24px;
+        max-width: 100%;
+    }
+
+    body.focus-mode .content h1 {
+        font-size: 1.6em;
+        margin-top: 1em;
+        margin-bottom: 0.6em;
+    }
+
+    body.focus-mode .content h2 {
+        font-size: 1.3em;
+        margin-top: 1em;
+    }
+
+    body.focus-mode .content h3 {
+        font-size: 1.1em;
+    }
+
+    body.focus-mode .content p {
+        line-height: 1.7;
+        margin-bottom: 1em;
+    }
+
+    body.focus-mode .breadcrumb-container {
+        padding: 10px 16px;
+        font-size: 11px;
     }
 }
 
+/* Focus mode responsive - Small Mobile */
 @media (max-width: 480px) {
     body.focus-mode .content {
-        padding: 12px 16px;
+        padding: 16px 16px;
+        font-size: 14px;
+    }
+
+    body.focus-mode .content h1 {
+        font-size: 1.4em;
+        margin-top: 0.8em;
+        margin-bottom: 0.5em;
+    }
+
+    body.focus-mode .content h2 {
+        font-size: 1.2em;
+        margin-top: 0.8em;
+    }
+
+    body.focus-mode .content h3 {
+        font-size: 1em;
+    }
+
+    body.focus-mode .content pre {
+        padding: 12px;
+        font-size: 12px;
+    }
+
+    body.focus-mode .content code {
+        font-size: 0.9em;
     }
 
     body.focus-mode .breadcrumb-container {
         padding: 8px 12px;
-        font-size: 12px;
+        font-size: 10px;
+    }
+
+    body.focus-mode .breadcrumb-sep {
+        margin: 0 4px;
     }
 }
 
