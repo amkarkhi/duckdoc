@@ -218,6 +218,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", serveMarkdown)
 	mux.HandleFunc("/api/search", apiSearch)
+	mux.HandleFunc("/api/export", apiExport)
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.Handle("/content/", http.StripPrefix("/content/", http.FileServer(http.Dir(contentDir))))
 

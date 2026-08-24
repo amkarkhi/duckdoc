@@ -417,6 +417,83 @@ body.sidebar-collapsed {
     stroke: currentColor;
 }
 
+.navbar-export-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+    padding: 8px 10px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.navbar-export-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.navbar-export-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+.export-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    margin-top: 8px;
+    z-index: 1000;
+    min-width: 160px;
+}
+
+.export-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    transition: all var(--transition-fast);
+}
+
+.export-option:first-child {
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.export-option:last-child {
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+}
+
+.export-option:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.export-icon {
+    font-size: 16px;
+}
+
+.export-label {
+    flex: 1;
+}
+
 /* ===== BUTTONS ===== */
 .sidebar-toggle {
     background: var(--bg-secondary);
