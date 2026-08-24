@@ -10,6 +10,12 @@
       type="image/x-icon"
       href="{{ .BasePath }}/static/duckdoclogo.ico"
     />
+    <script>
+      try {
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    </script>
     <link rel="stylesheet" href="{{ .BasePath }}/static/styles.css" />
     <script src="{{ .BasePath }}/static/sidebar.js" defer></script>
   </head>
